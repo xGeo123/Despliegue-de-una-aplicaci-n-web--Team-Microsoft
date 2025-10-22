@@ -8,7 +8,7 @@
 <body>
 
 <h1>Editar el Sexo</h1>
-<form action="/sexo/public/sexo/delete" method="POST">
+<form action="/eysphp/public/sexo/delete" method="POST">
     <input type="hidden" name="id" value="<?php echo htmlspecialchars($sexo['id']); ?>">
     
     <label for="nombre">Nombre:</label>

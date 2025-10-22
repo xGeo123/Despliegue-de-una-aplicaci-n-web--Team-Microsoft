@@ -10,7 +10,7 @@
 
 <div class="container">
     <h1>Listar  Sexos</h1>
-    <a href="/eysphp/app/views/sexo/create.php"><button>Agregar</button></a>
+   <a href="/eysphp/public/sexo/create"><button>Agregar</button></a>
 
     <table>
         <thead>
