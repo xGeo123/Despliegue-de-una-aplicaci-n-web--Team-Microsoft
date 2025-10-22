@@ -1,0 +1,38 @@
+# Nombre del workflow que verás en GitHub
+name: Deploy to InfinityFree
+
+# Configuración del "disparador"
+on:
+  # Esto hace que la acción se ejecute CADA VEZ que haces 'push' a la rama 'main'
+  push:
+    branches:
+      - main  # (Cambia a 'master' si tu rama principal se llama así)
+
+# Tareas a ejecutar
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # Usa una máquina virtual de Linux
+    steps:
+    - name: Checkout code
+      # 1. Descarga tu código del repo a la máquina virtual
+      uses: actions/checkout@v4
+
+    - name: FTP Deploy
+      # 2. Sube el código por FTP usando los "Secretos"
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ftpupload.net
+        username: ${{ secrets.FTP_USUARIO }}
+        password: ${{ secrets.FTP_CONTRA }}
+        
+        # --- ¡ESTA ES LA PARTE IMPORTANTE! ---
+        
+        # Sube todo el proyecto (desde la raíz local './')
+        local-dir: ./
+        
+        # A una carpeta en el servidor llamada 'eysphp'
+        # Esto imitará perfectamente tu entorno de XAMPP
+        server-dir: /htdocs/Despliegue-de-una-aplicaci-n-web--Team-Microsoft/
+        
+        # Borra archivos viejos del servidor (opcional pero recomendado)
+        delete: true
