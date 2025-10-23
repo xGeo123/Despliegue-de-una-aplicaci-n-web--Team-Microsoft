@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Personas</title>
-    <link rel="stylesheet" href="/public/css/style.css">
     <?php
-        // Estandarizar definiendo basePath
+        // Define la ruta base para que los enlaces funcionen
         $basePath = '/public/'; 
     ?>
+    <!-- CORRECCIÓN 1: El enlace CSS debe usar el basePath -->
+    <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css">
 </head>
 <body>
 
 <div class="container">
     <h1>Lista de Personas</h1>
+    <!-- CORRECCIÓN 1: El enlace 'Agregar' debe usar el basePath -->
     <a href="<?php echo $basePath; ?>persona/create"><button>Agregar</button></a>
 
     <table>
@@ -38,24 +40,32 @@
                         <td><?php echo htmlspecialchars($persona['fechanacimiento']); ?></td>
                         
                         <!-- 
-                          CORREGIDO: 
-                          Cambiado de 'elsexo' a 'sexo_nombre' para coincidir con registro.php
+                          CORRECCIÓN 2: 
+                          Usar 'sexo_nombre' (de la consulta JOIN) en lugar de 'elsexo'
                         -->
                         <td><?php echo htmlspecialchars($persona['sexo_nombre'] ?? $persona['idsexo']); ?></td> 
                         
                         <!-- 
-                          CORREGIDO: 
-                          Cambiado de 'elestadocivil' a 'estadocivil_nombre' para coincidir con registro.php
+                          CORRECCIÓN 2: 
+                          Usar 'estadocivil_nombre' (de la consulta JOIN) en lugar de 'elestadocivil'
                         -->
                         <td><?php echo htmlspecialchars($persona['estadocivil_nombre'] ?? $persona['idestadocivil']); ?></td> 
                         
                         <td>
+                            <!-- CORRECCIÓN 1: Los enlaces deben usar el basePath -->
                             <a href="<?php echo $basePath; ?>persona/view?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>View</button>
                             </a>
                             <a href="<?php echo $basePath; ?>persona/edit?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Editar</button>
                             </a>
+                            
+                            <!-- 
+                              CORRECCIÓN 3: 
+                              1. La ruta debe ser 'persona/eliminar'.
+                              2. El parámetro debe ser 'idpersona'.
+                              3. 'onclick' eliminado.
+                            -->
                             <a href="<?php echo $basePath; ?>persona/eliminar?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Eliminar</button>
                             </a>
@@ -71,7 +81,8 @@
     </table>
 </div>
 
-<script src="/public/js/script.js"></script>
+<!-- CORRECCIÓN 1: El script JS debe usar el basePath -->
+<script src="<?php echo $basePath; ?>js/script.js"></script>
 </body>
 </html>
 
