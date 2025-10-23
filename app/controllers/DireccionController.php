@@ -1,16 +1,18 @@
-<!DOCTYPE html>
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // En DireccionController.php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/app/models/Direccion.php';
+// Rutas corregidas usando __DIR__
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../models/Direccion.php';
+require_once __DIR__ . '/../models/Persona.php';
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/app/models/Persona.php';
 class DireccionController {
     private $direccion;
+    private $persona; // Necesario para los formularios
     private $db;
+    private $basePath = '/apple6b/public/'; // Definido en tu index.php
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
@@ -18,57 +20,61 @@ class DireccionController {
         $this->persona = new Persona($this->db);
     }
 
-    // Mostrar todos los teléfonos
+    // Mostrar todas las direcciones
     public function index() {
-        $direccions = $this->direccion->read1();
-        require_once '../app/views/direccion/index.php';
+        // Asumiendo que el método se llama 'read()' o 'readAll()'
+        // 'read1()' parecía un typo, lo cambié a 'read()'
+        $direcciones = $this->direccion->read(); 
+        require_once __DIR__ . '/../views/direccion/index.php';
     }
 
-
-    public function createForm() {
-
-
-        $personas = $this->persona->read();
-        require_once '../app/views/direccion/create.php';
-    }
-
-
-
-
-
+    // --- MUESTRA EL FORMULARIO DE CREACIÓN ---
+    // (Tu 'createForm' renombrado a 'create' para seguir el patrón)
     public function create() {
+        $personas = $this->persona->read();
+        require_once __DIR__ . '/../views/direccion/create.php';
+    }
+
+    // --- PROCESA EL FORMULARIO DE CREACIÓN ---
+    // (Tu 'create' renombrado a 'store' para seguir el patrón)
+    public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            echo "Formulario recibido";
-            if (isset($_POST['nombre'])) {
+            if (isset($_POST['nombre'], $_POST['idpersona'])) {
                 $this->direccion->idpersona = $_POST['idpersona'];
                 $this->direccion->nombre = $_POST['nombre'];
+                
                 if ($this->direccion->create()) {
-                    echo "Teléfono creado exitosamente";
+                    header('Location: ' . $this->basePath . 'direccion/index?msg=created');
                 } else {
-                    echo "Error al crear el teléfono";
+                    header('Location: ' . $this->basePath . 'direccion/index?msg=error');
                 }
             } else {
-                echo "Faltan datos";
+                header('Location: ' . $this->basePath . 'direccion/create?msg=missingdata');
             }
         } else {
-            echo "Método incorrecto";
+            header('Location: ' . $this->basePath . 'direccion/create');
         }
-        die();
+        exit;
     }
 
+    // --- MUESTRA EL FORMULARIO DE EDICIÓN ---
     public function edit($iddireccion) {
         $this->direccion->iddireccion = $iddireccion;
         $direccion = $this->direccion->readOne();
-        $personas = $this->persona->read();
-
+        
         if (!$direccion) {
             die("Error: No se encontró el registro.");
         }
+        
+        // Cargar personas para el <select>
+        $personas = $this->persona->read();
 
-        require_once '../app/views/direccion/edit.php';
+        require_once __DIR__ . '/../views/direccion/edit.php';
     }
 
-    public function eliminar($id) {
+    // --- MUESTRA LA VISTA DE CONFIRMACIÓN DE BORRADO ---
+    // (Parámetro corregido de $id a $iddireccion)
+    public function eliminar($iddireccion) {
         $this->direccion->iddireccion = $iddireccion;
         $direccion = $this->direccion->readOne();
 
@@ -76,92 +82,67 @@ class DireccionController {
             die("Error: No se encontró el registro.");
         }
 
-        require_once '../app/views/direccion/delete.php';
+        require_once __DIR__ . '/../views/direccion/delete.php';
     }
 
+    // --- PROCESA EL FORMULARIO DE EDICIÓN ---
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            echo "Formulario recibido";
-            if (isset($_POST['nombre'])) {
+            if (isset($_POST['iddireccion'], $_POST['nombre'], $_POST['idpersona'])) {
+                $this->direccion->iddireccion = $_POST['iddireccion'];
                 $this->direccion->idpersona = $_POST['idpersona'];
                 $this->direccion->nombre = $_POST['nombre'];
-                $this->direccion->iddireccion = $_POST['iddireccion'];
+
                 if ($this->direccion->update()) {
-                    echo "Teléfono actualizado exitosamente";
+                    header('Location: ' . $this->basePath . 'direccion/index?msg=updated');
                 } else {
-                    echo "Error al actualizar el teléfono";
+                    header('Location: ' . $this->basePath . 'direccion/index?msg=error');
                 }
             } else {
-                echo "Faltan datos";
+                $id = $_POST['iddireccion'] ?? 0;
+                 header('Location: ' . $this->basePath . 'direccion/edit?iddireccion=' . $id . '&msg=missingdata');
             }
         } else {
-            echo "Método incorrecto";
+            header('Location: ' . $this->basePath . 'direccion/index');
         }
-        die();
+        exit;
     }
 
+    // --- PROCESA EL BORRADO ---
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['id'])) {
-                $this->direccion->id = $_POST['id'];
+            // Corregido: Se buscaba 'id', ahora busca 'iddireccion'
+            if (isset($_POST['iddireccion'])) {
+                $this->direccion->iddireccion = $_POST['iddireccion'];
+                
                 if ($this->direccion->delete()) {
-                    echo "Teléfono borrado exitosamente";
-                    die();
-                    header('Location: index.php?msg=deleted');
-                    exit;
+                    header('Location: ' . $this->basePath . 'direccion/index?msg=deleted');
                 } else {
-                    header('Location: index.php?msg=error');
-                    exit;
+                    header('Location: ' . $this->basePath . 'direccion/index?msg=error');
                 }
             } else {
-                echo "Faltan datos";
+                header('Location: ' . $this->basePath . 'direccion/index?msg=missingid');
             }
         } else {
-            echo "Método incorrecto";
+            header('Location: ' . $this->basePath . 'direccion/index');
         }
-        die();
+        exit;
     }
 
+    // API (Se mantiene como estaba)
     public function api() {
-
         while (ob_get_level()) {
             ob_end_clean();
         }
 
-        $direcciones = $this->direccion->getAll();
+        $direcciones = $this->direccion->getAll(); // Asumiendo que getAll() existe
         header('Content-Type: application/json');
         echo json_encode($direcciones);
         exit;
     }
 }
 
-// Manejo de la acción en la URL
-if (isset($_GET['action'])) {
-    $controller = new DireccionController();
-
-    echo "hola";
-    switch ($_GET['action']) {
-        case 'createForm':
-            $controller->createForm();
-            break;
- 
-        case 'create':
-            $controller->create();
-            break;
-        case 'update':
-            $controller->update();
-            break;
-        case 'delete':
-            $controller->delete();
-            break;
-        case 'api':
-            $controller->api();
-            break;
-        default:
-            echo "Acción no válida.";
-            break;
-    }
-} else {
- //  echo "No se especificó ninguna acción.";
-}
+// --- ELIMINADO ---
+// Se borró todo el código de enrutamiento que estaba aquí,
+// ya que 'public/index.php' se encarga de eso.
 ?>

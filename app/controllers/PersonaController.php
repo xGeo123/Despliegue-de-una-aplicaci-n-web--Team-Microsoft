@@ -3,22 +3,27 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/app/models/Persona.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/app/models/Sexo.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/app/models/Estadocivil.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/app/models/Direccion.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/apple6b/app/models/Telefono.php';
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../models/Persona.php';
+require_once __DIR__ . '/../models/Sexo.php';
+require_once __DIR__ . '/../models/Estadocivil.php';
+require_once __DIR__ . '/../models/Direccion.php';
+require_once __DIR__ . '/../models/Telefono.php';
+
 class PersonaController {
     private $persona;
+    private $sexo;
+    private $estadocivil;
+    private $telefono;
+    private $direccion;
     private $db;
+    private $basePath = '/apple6b/public/'; // Definido en tu index.php
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
         $this->persona = new Persona($this->db);
         $this->sexo = new Sexo($this->db);
         $this->estadocivil = new Estadocivil($this->db);
-
         $this->telefono = new Telefono($this->db);
         $this->direccion = new Direccion($this->db);
     }
@@ -26,31 +31,27 @@ class PersonaController {
     // Mostrar todas las personas
     public function index() {
         $personas = $this->persona->read();
-        $sexos = $this->sexo->read();
-        $estadosciviles = $this->estadocivil->read();
+        $sexos = $this->sexo->read(); // Necesario para el index
+        $estadosciviles = $this->estadocivil->read(); // Necesario para el index
 
-        require_once '../app/views/persona/index.php';
+        require_once __DIR__ . '/../views/persona/index.php';
     }
 
-    // Mostrar el formulario de creación de persona
-    public function createForm() {
-
-
-        $sexos = $this->sexo->read();
-        $estadosciviles = $this->estadocivil->read();
-        require_once '../app/views/persona/create.php';
-    }
-
-    // Procesar la creación de una nueva persona
+    // --- MUESTRA EL FORMULARIO DE CREACIÓN ---
+    // (Tu 'createForm' renombrado a 'create' para seguir el patrón)
     public function create() {
-    //    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      //      if (
-        //        isset($_POST['nombres']) &&
-          //      isset($_POST['apellidos']) &&
-         //       isset($_POST['fechanacimiento']) &&
-         //       isset($_POST['idsexo']) &&
-         //       isset($_POST['idestadocivil'])
-         //   ) {
+        $sexos = $this->sexo->read();
+        $estadosciviles = $this->estadocivil->read();
+        require_once __DIR__ . '/../views/persona/create.php';
+    }
+
+    // --- PROCESA EL FORMULARIO DE CREACIÓN ---
+    // (Tu 'create' renombrado a 'store' para seguir el patrón)
+    public function store() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (
+                isset($_POST['nombres'], $_POST['apellidos'], $_POST['fechanacimiento'], $_POST['idsexo'], $_POST['idestadocivil'])
+            ) {
                 $this->persona->nombres = $_POST['nombres'];
                 $this->persona->apellidos = $_POST['apellidos'];
                 $this->persona->fechanacimiento = $_POST['fechanacimiento'];
@@ -58,75 +59,60 @@ class PersonaController {
                 $this->persona->idestadocivil = $_POST['idestadocivil'];
 
                 if ($this->persona->create()) {
-                    echo "personas creada con exito";
-                //    header('Location: index?msg=created');
-          //          exit;
+                    header('Location: ' . $this->basePath . 'persona/index?msg=created');
                 } else {
-
-
-                    $error = "Error al crear la persona.";
-                    require_once '../app/views/persona/create.php'; // Puedes pasar el error a la vista
-                    exit;
+                    header('Location: ' . $this->basePath . 'persona/index?msg=error');
                 }
-         //   } else {
-       // $sexos = $this->sexo->read();
-      //  $estadosciviles = $this->estadocivil->read();
-
-       // die(" 3");
-
-         //       $error = "Faltan datos en el formulario.";
-           //     require_once '../app/views/persona/create.php'; // Puedes pasar el error a la vista
-           //     exit;
-           // }
-       // } else {
-         //   header('Location: index.php'); // Redirigir si no es POST
-          //  exit;
-       // }
+            } else {
+                // Faltan datos, redirigir de vuelta al formulario de creación
+                header('Location: ' . $this->basePath . 'persona/create?msg=missingdata');
+            }
+        } else {
+            header('Location: ' . $this->basePath . 'persona/create');
+        }
+        exit;
     }
 
     // Mostrar el formulario de edición de persona
     public function edit($idpersona) {
         $this->persona->idpersona = $idpersona;
-        $sexos = $this->sexo->read();
-        $estadosciviles = $this->estadocivil->read();
         $persona = $this->persona->readOne();
 
         if (!$persona) {
             die("Error: No se encontró la persona.");
         }
 
-        require_once '../app/views/persona/edit.php';
+        // Cargar datos necesarios para los <select> del formulario
+        $sexos = $this->sexo->read();
+        $estadosciviles = $this->estadocivil->read();
+
+        require_once __DIR__ . '/../views/persona/edit.php';
     }
 
+    // Muestra el registro completo (vista detallada)
     public function registro($idpersona) {
         $this->persona->idpersona = $idpersona;
-        $sexos = $this->sexo->read();
-        $estadosciviles = $this->estadocivil->read();
-
-        $telefonos = $this->telefono->readByPersona($idpersona);
-        $direcciones = $this->direccion->readByPersona($idpersona);
         $persona = $this->persona->readOne();
 
         if (!$persona) {
             die("Error: No se encontró la persona.");
         }
+        
+        // Cargar datos relacionados
+        $sexos = $this->sexo->read(); // Para mostrar nombre de sexo
+        $estadosciviles = $this->estadocivil->read(); // Para mostrar nombre estado civil
+        $telefonos = $this->telefono->readByPersona($idpersona);
+        $direcciones = $this->direccion->readByPersona($idpersona);
 
-        require_once '../app/views/persona/registro.php';
+
+        require_once __DIR__ . '/../views/persona/registro.php';
     }
-
- 
-
 
     // Procesar la actualización de una persona
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (
-                isset($_POST['idpersona']) &&
-                isset($_POST['nombres']) &&
-                isset($_POST['apellidos']) &&
-                isset($_POST['fechanacimiento']) &&
-                isset($_POST['idsexo']) &&
-                isset($_POST['idestadocivil'])
+                isset($_POST['idpersona'], $_POST['nombres'], $_POST['apellidos'], $_POST['fechanacimiento'], $_POST['idsexo'], $_POST['idestadocivil'])
             ) {
                 $this->persona->idpersona = $_POST['idpersona'];
                 $this->persona->nombres = $_POST['nombres'];
@@ -136,26 +122,23 @@ class PersonaController {
                 $this->persona->idestadocivil = $_POST['idestadocivil'];
 
                 if ($this->persona->update()) {
-                    header('Location: index.php?msg=updated');
-                    exit;
+                    header('Location: ' . $this->basePath . 'persona/index?msg=updated');
                 } else {
-                    $error = "Error al actualizar la persona.";
-                    $this->editForm($_POST['idpersona']); // Volver al formulario con error
-                    exit;
+                    header('Location: ' . $this->basePath . 'persona/index?msg=error');
                 }
             } else {
-                $error = "Faltan datos en el formulario de actualización.";
-                $this->editForm($_POST['idpersona']); // Volver al formulario con error
-                exit;
+                $id = $_POST['idpersona'] ?? 0;
+                header('Location: ' . $this->basePath . 'persona/edit?idpersona=' . $id . '&msg=missingdata');
             }
         } else {
-            header('Location: index.php'); // Redirigir si no es POST
-            exit;
+            header('Location: ' . $this->basePath . 'persona/index');
         }
+        exit;
     }
 
     // Mostrar la confirmación de eliminación de persona
-    public function deleteForm($idpersona) {
+    // (Tu 'deleteForm' renombrado a 'eliminar' para seguir el patrón)
+    public function eliminar($idpersona) {
         $this->persona->idpersona = $idpersona;
         $persona = $this->persona->readOne();
 
@@ -163,7 +146,7 @@ class PersonaController {
             die("Error: No se encontró la persona.");
         }
 
-        require_once '../app/views/persona/delete.php';
+        require_once __DIR__ . '/../views/persona/delete.php';
     }
 
     // Procesar la eliminación de una persona
@@ -172,92 +155,33 @@ class PersonaController {
             if (isset($_POST['idpersona'])) {
                 $this->persona->idpersona = $_POST['idpersona'];
                 if ($this->persona->delete()) {
-                    header('Location: index.php?msg=deleted');
-                    exit;
+                    header('Location: ' . $this->basePath . 'persona/index?msg=deleted');
                 } else {
-                    header('Location: index.php?msg=error_delete');
-                    exit;
+                    header('Location: ' . $this->basePath . 'persona/index?msg=error');
                 }
             } else {
-                header('Location: index.php?msg=no_id_delete');
-                exit;
+                header('Location: ' . $this->basePath . 'persona/index?msg=missingid');
             }
         } else {
-            header('Location: index.php'); // Redirigir si no es POST
-            exit;
+            header('Location: ' . $this->basePath . 'persona/index');
         }
+        exit;
     }
 
+    // API (Se mantiene como estaba)
     public function api() {
-
         while (ob_get_level()) {
             ob_end_clean();
         }
 
-        $personas = $this->persona->getAll();
+        $personas = $this->persona->getAll(); // Asumiendo que getAll() existe
         header('Content-Type: application/json');
         echo json_encode($personas);
         exit;
-
-
-
     }
 }
 
-// Manejo de la acción en la URL
-if (isset($_GET['action'])) {
-    $controller = new PersonaController();
-    $action = $_GET['action'];
-
-    if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-    } elseif (isset($_POST['idpersona'])) {
-        $id = $_POST['idpersona'];
-    } else {
-        $id = null;
-    }
-
-    switch ($_GET['action']) {
-        case 'index':
-            $controller->index();
-            break;
-        case 'createForm':
-            $controller->createForm();
-            break;
-        case 'create':
-            $controller->create();
-            break;
-        case 'editForm':
-            if ($id !== null) {
-                $controller->editForm($id);
-            } else {
-                echo "Error: ID de persona no especificado para editar.";
-            }
-            break;
-        case 'update':
-            $controller->update();
-            break;
-        case 'deleteForm':
-            if ($id !== null) {
-                $controller->deleteForm($id);
-            } else {
-                echo "Error: ID de persona no especificado para eliminar.";
-            }
-            break;
-        case 'delete':
-            $controller->delete();
-            break;
-        case 'api':
-
-        $controller->api();
-        break;
-        default:
-            echo "Acción no válida.";
-            break;
-    }
-} else {
-   // $controller = new PersonaController();
-  //  $controller->index(); // Acción por defecto si no se especifica ninguna
-
-}
+// --- ELIMINADO ---
+// Se borró todo el código de enrutamiento que estaba aquí,
+// ya que 'public/index.php' se encarga de eso.
 ?>
