@@ -5,12 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Estados Civiles</title>
     <link rel="stylesheet" href="/public/css/style.css">
+    <?php
+        // Definir basePath aquí es una buena práctica si 'public' no es la raíz
+        $basePath = '/public/'; 
+    ?>
 </head>
 <body>
 
 <div class="container">
     <h1>Listar Estados Civiles</h1>
-    <a href="/app/views/estadocivil/create.php"><button>Agregar</button></a>
+    
+    <!-- 
+      AQUÍ ESTÁ LA CORRECCIÓN:
+      El enlace debe apuntar a la RUTA '/public/estadocivil/create'
+      NO al archivo '/app/views/estadocivil/create.php'
+    -->
+    <a href="<?php echo $basePath; ?>estadocivil/create"><button>Agregar</button></a>
 
     <table>
         <thead>
@@ -27,11 +37,16 @@
                         <td><?php echo htmlspecialchars($estadocivil['idestadocivil']); ?></td>
                         <td><?php echo htmlspecialchars($estadocivil['nombre']); ?></td>
                         <td>
-                            <a href="/public/estadocivil/edit?idestadocivil=<?php echo htmlspecialchars($estadocivil['idestadocivil']); ?>">
+                            <!-- Este enlace está bien -->
+                            <a href="<?php echo $basePath; ?>estadocivil/edit?idestadocivil=<?php echo htmlspecialchars($estadocivil['idestadocivil']); ?>">
                                 <button>Editar</button>
                             </a>
-                            <a href="/public/estadocivil/eliminar?idestadocivil=<?php echo htmlspecialchars($estadocivil['idestadocivil']); ?>"
-                               onclick="return confirm('¿Estás seguro de eliminar este registro?');">
+                            
+                            <!-- 
+                              CORRECCIÓN: Se eliminó el 'onclick="return confirm(...)"'
+                              Tu controlador 'eliminar()' ya muestra una vista de confirmación.
+                            -->
+                            <a href="<?php echo $basePath; ?>estadocivil/eliminar?idestadocivil=<?php echo htmlspecialchars($estadocivil['idestadocivil']); ?>">
                                 <button>Eliminar</button>
                             </a>
                         </td>
