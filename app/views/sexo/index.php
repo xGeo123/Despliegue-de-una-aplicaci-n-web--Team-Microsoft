@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Sexos</title>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css"> 
+    <style>
+        /* Estilos adicionales para el botón Volver */
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px; /* Espacio debajo del botón */
+            padding: 8px 15px;
+            background-color: #6c757d; /* Color gris */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
     <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>

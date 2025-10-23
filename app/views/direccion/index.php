@@ -15,6 +15,23 @@
 
 <div class="container">
     <h1>Listar Direcciones</h1>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css"> 
+    <style>
+        /* Estilos adicionales para el botón Volver */
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px; /* Espacio debajo del botón */
+            padding: 8px 15px;
+            background-color: #6c757d; /* Color gris */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
     <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
     <a href="<?php echo $basePath; ?>direccion/create"><button>Agregar</button></a>
 

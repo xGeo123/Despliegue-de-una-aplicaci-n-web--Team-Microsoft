@@ -15,6 +15,23 @@
 
 <div class="container">
     <h1>Lista de Personas</h1>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css"> 
+    <style>
+        /* Estilos adicionales para el botón Volver */
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px; /* Espacio debajo del botón */
+            padding: 8px 15px;
+            background-color: #6c757d; /* Color gris */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
     <!-- CORRECCIÓN 1: El enlace 'Agregar' debe usar el basePath -->
      <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
     <a href="<?php echo $basePath; ?>persona/create"><button>Agregar</button></a>
