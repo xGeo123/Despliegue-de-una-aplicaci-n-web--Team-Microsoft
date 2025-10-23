@@ -59,13 +59,6 @@
                             <a href="<?php echo $basePath; ?>persona/edit?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Editar</button>
                             </a>
-                            
-                            <!-- 
-                              CORRECCIÓN 3: 
-                              1. La ruta debe ser 'persona/eliminar'.
-                              2. El parámetro debe ser 'idpersona'.
-                              3. 'onclick' eliminado.
-                            -->
                             <a href="<?php echo $basePath; ?>persona/eliminar?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Eliminar</button>
                             </a>
