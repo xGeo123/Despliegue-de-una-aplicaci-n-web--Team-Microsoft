@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Direccions</title>
-    <link rel="stylesheet" href="/apple6b/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
 
 <div class="container">
     <h1>Listar  Direccions</h1>
-    <a href="/apple6b/public/direccion/create"><button>Agregar</button></a>
+    <a href="/public/direccion/create"><button>Agregar</button></a>
 
     <table>
         <thead>
@@ -29,7 +29,7 @@
                         <td><?php echo htmlspecialchars($direccion['lapersona']); ?></td>
                         <td><?php echo htmlspecialchars($direccion['nombre']); ?></td>
                         <td>
-    <a href="/apple6b/public/direccion/edit?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>">
+    <a href="/public/direccion/edit?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>">
         <button>Editar</button>
     </a>
     <a href="/apple6b/public/direccion/eliminar?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>" 
