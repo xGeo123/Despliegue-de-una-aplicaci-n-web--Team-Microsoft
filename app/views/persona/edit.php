@@ -1,3 +1,7 @@
+<?php
+// Define la ruta base para que los enlaces y el 'action' del formulario funcionen
+$basePath = '/public/';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -45,12 +49,13 @@
         input[type="submit"] {
             width: 100%;
             padding: 12px;
-            background-color: #28a745;
+            background-color: #28a745; /* Botón verde para 'Actualizar' */
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            margin-bottom: 20px; /* Espacio para el enlace 'Volver' */
         }
 
         input[type="submit"]:hover {
@@ -60,13 +65,31 @@
         .form-group {
             margin-bottom: 20px;
         }
+
+        /* Estilo para el enlace 'Volver' */
+        .form-container a {
+            display: block;
+            text-align: center;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
     <div class="form-container">
         <h2>Editar Persona</h2>
-        <form action="../../app/controllers/PersonaController.php?action=update" method="POST">
+        
+        <!-- 
+          ACCIÓN CORREGIDA: 
+          Debe apuntar a la RUTA '/public/persona/update'
+        -->
+        <form action="<?php echo $basePath; ?>persona/update" method="POST">
             <!-- ID oculto -->
             <input type="hidden" name="idpersona" value="<?= $persona['idpersona'] ?>">
 
@@ -89,7 +112,12 @@
                 <label for="idsexo">Sexo:</label>
                 <select name="idsexo" id="idsexo" required>
                     <?php foreach ($sexos as $sexo): ?>
-                        <option value="<?= $sexo['idsexo'] ?>" <?= $sexo['idsexo'] == $persona['idsexo'] ? 'selected' : '' ?>>
+                        <!-- 
+                          CORREGIDO: 
+                          1. El valor del option debe ser 'id' (PK de la tabla sexo).
+                          2. La comparación debe ser 'id' vs 'idsexo' (FK de la tabla persona).
+                        -->
+                        <option value="<?= $sexo['id'] ?>" <?= $sexo['id'] == $persona['idsexo'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($sexo['nombre']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -109,6 +137,9 @@
 
             <input type="submit" value="Actualizar Persona">
         </form>
+
+        <!-- Enlace para Volver -->
+        <a href="<?php echo $basePath; ?>persona">Volver al listado</a>
     </div>
 
 </body>

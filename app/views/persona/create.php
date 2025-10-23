@@ -1,3 +1,7 @@
+<?php
+// Define la ruta base para que los enlaces y el 'action' del formulario funcionen
+$basePath = '/public/';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -39,7 +43,7 @@
             margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Añadido para padding correcto */
         }
 
         input[type="submit"] {
@@ -51,6 +55,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            margin-bottom: 20px; /* Espacio para el enlace 'Volver' */
         }
 
         input[type="submit"]:hover {
@@ -60,13 +65,32 @@
         .form-group {
             margin-bottom: 20px;
         }
+
+        /* Estilo para el enlace 'Volver' */
+        .form-container a {
+            display: block;
+            text-align: center;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
     <div class="form-container">
         <h2>Crear Nueva Persona</h2>
-        <form action="../../app/controllers/PersonaController.php?action=create" method="POST">
+        
+        <!-- 
+          ACCIÓN CORREGIDA: 
+          Debe apuntar a la RUTA '/public/persona/store' 
+          y NO al archivo del controlador.
+        -->
+        <form action="<?php echo $basePath; ?>persona/store" method="POST">
             <div class="form-group">
                 <label for="nombres">Nombres:</label>
                 <input type="text" name="nombres" id="nombres" required>
@@ -85,10 +109,12 @@
             <div class="form-group">
                 <label for="idsexo">Sexo:</label>
                 <select name="idsexo" id="idsexo" required>
+                    <option value="">Seleccione un sexo</option>
                     <?php
                     if (isset($sexos) && !empty($sexos)):
                         foreach ($sexos as $sexo):
-                            echo '<option value="' . $sexo['idsexo'] . '">' . htmlspecialchars($sexo['nombre']) . '</option>';
+                            // CORREGIDO: El valor debe ser 'id', que es la PK de la tabla sexo.
+                            echo '<option value="' . $sexo['id'] . '">' . htmlspecialchars($sexo['nombre']) . '</option>';
                         endforeach;
                     else:
                         echo '<option value="">No hay sexos disponibles</option>';
@@ -100,6 +126,7 @@
             <div class="form-group">
                 <label for="idestadocivil">Estado Civil:</label>
                 <select name="idestadocivil" id="idestadocivil" required>
+                    <option value="">Seleccione un estado civil</option>
                     <?php
                     if (isset($estadosciviles) && !empty($estadosciviles)):
                         foreach ($estadosciviles as $estadocivil):
@@ -114,8 +141,10 @@
 
             <input type="submit" value="Crear Persona">
         </form>
+
+        <!-- Enlace para Volver -->
+        <a href="<?php echo $basePath; ?>persona">Volver al listado</a>
     </div>
 
 </body>
 </html>
-
