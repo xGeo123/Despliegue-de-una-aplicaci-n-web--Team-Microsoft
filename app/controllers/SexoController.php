@@ -35,7 +35,7 @@ class SexoController {
                 $this->sexo->nombre = $_POST['nombre'];
                 if ($this->sexo->create()) {
                     // Éxito: Redirigir al listado
-                    header('Location: /eysphp/public/sexo');
+                    header('Location: /public/sexo');
                     exit;
                 } else {
                     echo "Error al crear el sexo";
@@ -82,7 +82,7 @@ class SexoController {
                 
                 if ($this->sexo->update()) {
                     // Éxito: Redirigir al listado
-                    header('Location: /eysphp/public/sexo');
+                    header('Location: /public/sexo');
                     exit;
                 } else {
                     echo "Error al actualizar el sexo";
@@ -103,7 +103,7 @@ class SexoController {
                 $this->sexo->id = $_POST['id'];
                 if ($this->sexo->delete()) {
                     // Éxito: Redirigir al listado
-                    header('Location: /eysphp/public/sexo');
+                    header('Location: /public/sexo');
                     exit;
                 } else {
                     echo "Error al eliminar el sexo";

@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Sexos</title>
-    <link rel="stylesheet" href="/eysphp/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
 
 <div class="container">
     <h1>Listar  Sexos</h1>
-   <a href="/eysphp/public/sexo/create"><button>Agregar</button></a>
+   <a href="/public/sexo/create"><button>Agregar</button></a>
 
     <table>
         <thead>
@@ -27,10 +27,10 @@
                         <td><?php echo htmlspecialchars($sexo['id']); ?></td>
                         <td><?php echo htmlspecialchars($sexo['nombre']); ?></td>
                         <td>
-    <a href="/eysphp/public/sexo/edit?id=<?php echo htmlspecialchars($sexo['id']); ?>">
+    <a href="/public/sexo/edit?id=<?php echo htmlspecialchars($sexo['id']); ?>">
         <button>Editar</button>
     </a>
-    <a href="/eysphp/public/sexo/eliminar?id=<?php echo htmlspecialchars($sexo['id']); ?>" 
+    <a href="/public/sexo/eliminar?id=<?php echo htmlspecialchars($sexo['id']); ?>" 
        onclick="return confirm('¿Estás seguro de eliminar este registro?');">
         <button>Eliminar</button>
     </a>
@@ -46,6 +46,6 @@
     </table>
 </div>
 
-<script src="/eysphp/public/js/script.js"></script>
+<script src="/public/js/script.js"></script>
 </body>
 </html>

@@ -7,12 +7,12 @@
 <body>
     <h1>Crear Nuevo Sexo</h1>
     
-    <form action="/eysphp/public/sexo/store" method="POST">
+    <form action="/public/sexo/store" method="POST">
         <label for="nombre">Nombre:</label>
         <input type="text" name="nombre" id="nombre" required>
         <input type="submit" value="Crear">
     </form>
 
-    <a href="/eysphp/public/sexo">Volver al listado</a>
+    <a href="/public/sexo">Volver al listado</a>
 </body>
 </html>

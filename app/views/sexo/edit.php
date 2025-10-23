@@ -8,7 +8,7 @@
 <body>
 
 <h1>Editar </h1>
-<form action="/eysphp/public/sexo/update" method="POST">
+<form action="/public/sexo/update" method="POST">
     <input type="hidden" name="id" value="<?php echo htmlspecialchars($sexo['id']); ?>">
     
     <label for="nombre">Nombre:</label>
