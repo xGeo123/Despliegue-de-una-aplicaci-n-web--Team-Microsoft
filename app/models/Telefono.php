@@ -34,34 +34,17 @@ class Telefono {
         }
     }
 
-
-    // Leer todos los teléfonos
-    public function read1() {
-        try {
-            $query = "SELECT * FROM " . "telefono1";
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute();
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        } catch (PDOException $e) {
-            error_log("Error en read() para telefono: " . $e->getMessage());
-            return [];
-        }
-    }
-
-public function getAll() {
-        // Conexión a la base de datos
-        $query = $this->conn->query("SELECT *  FROM telefono");
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-
-
-    // Leer todos los teléfonos
+    // Leer todos los teléfonos CON el nombre de la persona
     public function read() {
         try {
-            $query = "SELECT * FROM " . $this->table_name;
+            // CORREGIDO: Añadido LEFT JOIN y alias persona_nombre
+            $query = "SELECT 
+                        t.*, 
+                        CONCAT(p.apellidos, ' ', p.nombres) AS persona_nombre 
+                      FROM " . $this->table_name . " t
+                      LEFT JOIN persona p ON t.idpersona = p.idpersona
+                      ORDER BY t.idtelefono ASC"; // Opcional: ordenar
+                      
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
 
@@ -73,11 +56,7 @@ public function getAll() {
         }
     }
 
-
-   
-
-
-    // Leer un solo teléfono por ID
+    // Leer un solo teléfono por ID (Sin JOIN, usualmente no se necesita aquí)
     public function readOne() {
         try {
             $query = "SELECT * FROM " . $this->table_name . " WHERE idtelefono = :idtelefono LIMIT 1";
@@ -97,9 +76,9 @@ public function getAll() {
     public function update() {
         try {
             $query = "UPDATE " . $this->table_name . " SET
-                        idpersona = :idpersona,
-                        numero = :numero
-                      WHERE idtelefono = :idtelefono";
+                            idpersona = :idpersona,
+                            numero = :numero
+                          WHERE idtelefono = :idtelefono";
 
             $stmt = $this->conn->prepare($query);
 
