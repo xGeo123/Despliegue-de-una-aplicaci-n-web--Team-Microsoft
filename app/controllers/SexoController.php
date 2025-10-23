@@ -118,7 +118,3 @@ class SexoController {
     }
 }
 
-// --- IMPORTANTE ---
-// Hemos eliminado el enrutador antiguo que estaba aquí.
-// También eliminamos el <!DOCTYPE html> del inicio.
-// Haz lo mismo para tu TelefonoController.php

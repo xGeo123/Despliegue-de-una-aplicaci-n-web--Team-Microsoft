@@ -10,9 +10,9 @@ require_once __DIR__ . '/../models/Persona.php';
 
 class DireccionController {
     private $direccion;
-    private $persona; // Necesario para los formularios
+    private $persona; 
     private $db;
-    private $basePath = '/public/'; // Definido en tu index.php
+    private $basePath = '/public/'; 
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
@@ -22,30 +22,22 @@ class DireccionController {
 
     // Mostrar todas las direcciones
     public function index() {
-        // Asumiendo que el método se llama 'read()' o 'readAll()'
-        // 'read1()' parecía un typo, lo cambié a 'read()'
+        
         $direcciones = $this->direccion->read(); 
 
-        // --- DEBUG ELIMINADO ---
-        // echo "<pre>"; 
-        // var_dump($direcciones); 
-        // echo "</pre>";
-        // die(); 
-        // --- FIN DEBUG ELIMINADO ---
-
-        // Si los datos se ven bien en el var_dump, puedes quitar las líneas de debug
+        
         require_once __DIR__ . '/../views/direccion/index.php';
     }
 
     // --- MUESTRA EL FORMULARIO DE CREACIÓN ---
-    // (Tu 'createForm' renombrado a 'create' para seguir el patrón)
+   
     public function create() {
         $personas = $this->persona->read();
         require_once __DIR__ . '/../views/direccion/create.php';
     }
 
     // --- PROCESA EL FORMULARIO DE CREACIÓN ---
-    // (Tu 'create' renombrado a 'store' para seguir el patrón)
+
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['nombre'], $_POST['idpersona'])) {
@@ -82,7 +74,7 @@ class DireccionController {
     }
 
     // --- MUESTRA LA VISTA DE CONFIRMACIÓN DE BORRADO ---
-    // (Parámetro corregido de $id a $iddireccion)
+
     public function eliminar($iddireccion) {
         $this->direccion->iddireccion = $iddireccion;
         $direccion = $this->direccion->readOne();
@@ -120,7 +112,7 @@ class DireccionController {
     // --- PROCESA EL BORRADO ---
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Corregido: Se buscaba 'id', ahora busca 'iddireccion'
+        
             if (isset($_POST['iddireccion'])) {
                 $this->direccion->iddireccion = $_POST['iddireccion'];
                 
@@ -138,7 +130,7 @@ class DireccionController {
         exit;
     }
 
-    // API (Se mantiene como estaba)
+
     public function api() {
         while (ob_get_level()) {
             ob_end_clean();
@@ -152,8 +144,5 @@ class DireccionController {
     }
 }
 
-// --- ELIMINADO ---
-// Se borró todo el código de enrutamiento que estaba aquí,
-// ya que 'public/index.php' se encarga de eso.
 ?>
 

@@ -1,18 +1,14 @@
 <?php
-// MEJORAS EN VISUAL CODE
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-// En EstadocivilController.php
-
-// Rutas corregidas usando __DIR__
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../models/Estadocivil.php';
 
-// Nombre de clase corregido a PascalCase
 class EstadocivilController {
     private $estadocivil;
     private $db;
-    private $basePath = '/public/'; // Definido en tu index.php
+    private $basePath = '/public/'; 
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
@@ -27,13 +23,12 @@ class EstadocivilController {
     }
 
     // --- MUESTRA EL FORMULARIO DE CREACIÓN ---
-    // (Lógica separada del POST)
     public function create() {
-        require_once __DIR__ . '/../views/estadocivil/create.php'; // Mostrar el formulario de creación
+        require_once __DIR__ . '/../views/estadocivil/create.php'; 
     }
 
     // --- PROCESA EL FORMULARIO DE CREACIÓN ---
-    // (Nuevo método 'store' para manejar el POST)
+    
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['nombre'])) {
@@ -132,7 +127,4 @@ class EstadocivilController {
     }
 }
 
-// --- ELIMINADO ---
-// Se borró todo el código de enrutamiento que estaba aquí,
-// ya que 'public/index.php' se encarga de eso.
 ?>
