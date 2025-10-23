@@ -32,7 +32,7 @@
     <a href="/public/direccion/edit?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>">
         <button>Editar</button>
     </a>
-    <a href="/apple6b/public/direccion/eliminar?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>" 
+    <a href="/public/direccion/eliminar?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>" 
        onclick="return confirm('¿Estás seguro de eliminar este registro?');">
         <button>Eliminar</button>
     </a>
@@ -48,6 +48,6 @@
     </table>
 </div>
 
-<script src="/apple6b/public/js/script.js"></script>
+<script src="/public/js/script.js"></script>
 </body>
 </html>

@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Telefonos</title>
-    <link rel="stylesheet" href="/apple6b/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
 
 <div class="container">
     <h1>Listar  Telefonos</h1>
-    <a href="/apple6b/public/telefono/create"><button>Agregar</button></a>
+    <a href="/public/telefono/create"><button>Agregar</button></a>
 
     <table>
         <thead>
@@ -29,10 +29,10 @@
                         <td><?php echo htmlspecialchars($telefono['lapersona']); ?></td>
                         <td><?php echo htmlspecialchars($telefono['numero']); ?></td>
                         <td>
-    <a href="/apple6b/public/telefono/edit?idtelefono=<?php echo htmlspecialchars($telefono['idtelefono']); ?>">
+    <a href="/public/telefono/edit?idtelefono=<?php echo htmlspecialchars($telefono['idtelefono']); ?>">
         <button>Editar</button>
     </a>
-    <a href="/apple6b/public/telefono/eliminar?idtelefono=<?php echo htmlspecialchars($telefono['idtelefono']); ?>" 
+    <a href="/public/telefono/eliminar?idtelefono=<?php echo htmlspecialchars($telefono['idtelefono']); ?>" 
        onclick="return confirm('¿Estás seguro de eliminar este registro?');">
         <button>Eliminar</button>
     </a>
@@ -48,6 +48,6 @@
     </table>
 </div>
 
-<script src="/apple6b/public/js/script.js"></script>
+<script src="/public/js/script.js"></script>
 </body>
 </html>
