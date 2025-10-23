@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Personas</title>
     <link rel="stylesheet" href="/public/css/style.css">
+    <?php
+        // Estandarizar definiendo basePath
+        $basePath = '/public/'; 
+    ?>
 </head>
 <body>
 
 <div class="container">
     <h1>Lista de Personas</h1>
-    <a href="/public/persona/create"><button>Agregar</button></a>
+    <a href="<?php echo $basePath; ?>persona/create"><button>Agregar</button></a>
 
     <table>
         <thead>
@@ -32,15 +36,22 @@
                         <td><?php echo htmlspecialchars($persona['nombres']); ?></td>
                         <td><?php echo htmlspecialchars($persona['apellidos']); ?></td>
                         <td><?php echo htmlspecialchars($persona['fechanacimiento']); ?></td>
-                        <td><?php echo htmlspecialchars($persona['elsexo']); ?></td> <td><?php echo htmlspecialchars($persona['elestadocivil']); ?></td> <td>
-                            <a href="/public/persona/view?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
+                        <td><?php echo htmlspecialchars($persona['elsexo']); ?></td> 
+                        <td><?php echo htmlspecialchars($persona['elestadocivil']); ?></td> 
+                        <td>
+                            <a href="<?php echo $basePath; ?>persona/view?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>View</button>
                             </a>
-                            <a href="/public/persona/edit?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
+                            <a href="<?php echo $basePath; ?>persona/edit?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Editar</button>
                             </a>
-                            <a href="/public/persona/deleteForm?id=<?php echo htmlspecialchars($persona['idpersona']); ?>"
-                               onclick="return confirm('¿Estás seguro de eliminar esta persona?');">
+                            <!-- 
+                              CORREGIDO:
+                              1. Ruta cambiada de 'deleteForm' a 'eliminar'.
+                              2. Parámetro cambiado de 'id' a 'idpersona'.
+                              3. 'onclick' eliminado (ya tenemos página de confirmación).
+                            -->
+                            <a href="<?php echo $basePath; ?>persona/eliminar?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Eliminar</button>
                             </a>
                         </td>
