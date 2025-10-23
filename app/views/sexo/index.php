@@ -1,14 +1,9 @@
-<?php
-    // Define la ruta base para que los enlaces funcionen
-    $basePath = '/public/'; 
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Sexos</title>
-    <!-- CORREGIDO: Usar basePath -->
     <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css"> 
     <style>
         /* Estilos adicionales para el botón Volver */
@@ -26,15 +21,14 @@
             background-color: #5a6268;
         }
     </style>
-    <!-- CORREGIDO: Enlace CSS duplicado eliminado -->
+    <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
 
 <div class="container">
-    <h1>Listar Sexos</h1>
+    <h1>Listar  Sexos</h1>
     <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
-    <!-- CORREGIDO: Usar basePath -->
-   <a href="<?php echo $basePath; ?>sexo/create"><button>Agregar</button></a>
+   <a href="/public/sexo/create"><button>Agregar</button></a>
 
     <table>
         <thead>
@@ -51,15 +45,14 @@
                         <td><?php echo htmlspecialchars($sexo['id']); ?></td>
                         <td><?php echo htmlspecialchars($sexo['nombre']); ?></td>
                         <td>
-                            <!-- Enlace Editar (Correcto) -->
-                            <a href="<?php echo $basePath; ?>sexo/edit?id=<?php echo htmlspecialchars($sexo['id']); ?>">
-                                <button>Editar</button>
-                            </a>
-                            <!-- Enlace Eliminar (Correcto, onclick eliminado) -->
-                            <a href="<?php echo $basePath; ?>sexo/eliminar?id=<?php echo htmlspecialchars($sexo['id']); ?>">
-                                <button>Eliminar</button>
-                            </a>
-                        </td>
+    <a href="/public/sexo/edit?id=<?php echo htmlspecialchars($sexo['id']); ?>">
+        <button>Editar</button>
+    </a>
+    <a href="/public/sexo/eliminar?id=<?php echo htmlspecialchars($sexo['id']); ?>" 
+       onclick="return confirm('¿Estás seguro de eliminar este registro?');">
+        <button>Eliminar</button>
+    </a>
+</td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -71,7 +64,6 @@
     </table>
 </div>
 
-<!-- CORREGIDO: Usar basePath -->
-<script src="<?php echo $basePath; ?>js/script.js"></script>
+<script src="/public/js/script.js"></script>
 </body>
 </html>
