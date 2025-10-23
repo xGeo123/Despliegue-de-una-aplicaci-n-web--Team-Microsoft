@@ -32,25 +32,47 @@ class Persona {
             $stmt->bindParam(":idsexo", $this->idsexo, PDO::PARAM_INT);
             $stmt->bindParam(":idestadocivil", $this->idestadocivil, PDO::PARAM_INT);
 
-            return $stmt->execute();
-            echo "grabo";
-            die();
+            // CORRECCIÓN: El 'return' debe ir al final.
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
+
         } catch (PDOException $e) {
             echo "no grabo:  ".$this->idestadocivil;
             echo $e->getMessage();
             error_log("Error en create() para persona: " . $e->getMessage());
-            die();
+            // CORRECCIÓN: El 'die()' estaba antes del 'return'.
             return false;
         }
     }
 
-    // Leer todas las personas
+    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
+    // Leer todas las personas con los nombres de sexo y estadocivil
     public function read() {
         try {
-            $query = "SELECT * FROM persona1";    // . $this->table_name;
+            // La consulta SQL ahora une las tablas 'sexo' y 'estadocivil'
+            // y usa 'AS' para crear los nombres de columna que la Vista espera.
+            $query = "SELECT 
+                        p.idpersona,
+                        p.nombres,
+                        p.apellidos,
+                        p.fechanacimiento,
+                        p.idsexo,
+                        p.idestadocivil,
+                        s.nombre AS sexo_nombre, 
+                        e.nombre AS estadocivil_nombre
+                    FROM 
+                        " . $this->table_name . " p
+                        LEFT JOIN 
+                            sexo s ON p.idsexo = s.id
+                        LEFT JOIN 
+                            estadocivil e ON p.idestadocivil = e.idestadocivil";
+            
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
-
+            
+            // Devolver los resultados como un array asociativo
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
@@ -59,15 +81,46 @@ class Persona {
         }
     }
 
-    // Leer una sola persona por ID
+    // --- ¡AQUÍ ESTÁ LA OTRA CORRECCIÓN! ---
+    // Leer una sola persona por ID, con los nombres
     public function readOne() {
         try {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE idpersona = :idpersona LIMIT 1";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":idpersona", $this->idpersona, PDO::PARAM_INT);
-            $stmt->execute();
+            $query = "SELECT 
+                        p.idpersona,
+                        p.nombres,
+                        p.apellidos,
+                        p.fechanacimiento,
+                        p.idsexo,
+                        p.idestadocivil,
+                        s.nombre AS sexo_nombre, 
+                        e.nombre AS estadocivil_nombre
+                    FROM 
+                        " . $this->table_name . " p
+                        LEFT JOIN 
+                            sexo s ON p.idsexo = s.id
+                        LEFT JOIN 
+                            estadocivil e ON p.idestadocivil = e.idestadocivil
+                    WHERE
+                        p.idpersona = ?
+                    LIMIT 0,1";
 
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $this->idpersona);
+            $stmt->execute();
+            
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($row) {
+                // Asignar valores a las propiedades del objeto
+                $this->nombres = $row['nombres'];
+                $this->apellidos = $row['apellidos']; // Corregido: $this->apellidos
+                $this->fechanacimiento = $row['fechanacimiento'];
+                $this->idsexo = $row['idsexo'];
+                $this->idestadocivil = $row['idestadocivil'];
+                
+                return $row; // Devuelve el array completo para la vista
+            }
+            return null;
 
         } catch (PDOException $e) {
             error_log("Error en readOne() para persona: " . $e->getMessage());
@@ -79,12 +132,12 @@ class Persona {
     public function update() {
         try {
             $query = "UPDATE " . $this->table_name . " SET
-                        nombres = :nombres,
-                        apellidos = :apellidos,
-                        fechanacimiento = :fechanacimiento,
-                        idsexo = :idsexo,
-                        idestadocivil = :idestadocivil
-                      WHERE idpersona = :idpersona";
+                            nombres = :nombres,
+                            apellidos = :apellidos,
+                            fechanacimiento = :fechanacimiento,
+                            idsexo = :idsexo,
+                            idestadocivil = :idestadocivil
+                        WHERE idpersona = :idpersona";
 
             $stmt = $this->conn->prepare($query);
 
@@ -104,12 +157,8 @@ class Persona {
         }
     }
 
-
-    public function getAll() {
-        // Conexión a la base de datos
-        $query = $this->conn->query("SELECT * FROM persona1");
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    }
+    // --- MÉTODO getAll() ELIMINADO ---
+    // (Era redundante y apuntaba a 'persona1')
 
     // Eliminar una persona
     public function delete() {
@@ -138,3 +187,4 @@ class Persona {
     }
 }
 ?>
+

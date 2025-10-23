@@ -30,15 +30,18 @@ class PersonaController {
 
     // Mostrar todas las personas
     public function index() {
-        $personas = $this->persona->read();
-        $sexos = $this->sexo->read(); // Necesario para el index
-        $estadosciviles = $this->estadocivil->read(); // Necesario para el index
+        // $personas ya incluye 'sexo_nombre' y 'estadocivil_nombre' gracias al JOIN en el Modelo
+        $personas = $this->persona->read(); 
+        
+        // $sexos y $estadosciviles no son estrictamente necesarios aquí para la tabla,
+        // pero podrían usarse para filtros, etc. Los dejamos por si acaso.
+        $sexos = $this->sexo->read(); 
+        $estadosciviles = $this->estadocivil->read(); 
 
         require_once __DIR__ . '/../views/persona/index.php';
     }
 
     // --- MUESTRA EL FORMULARIO DE CREACIÓN ---
-    // (Tu 'createForm' renombrado a 'create' para seguir el patrón)
     public function create() {
         $sexos = $this->sexo->read();
         $estadosciviles = $this->estadocivil->read();
@@ -46,7 +49,6 @@ class PersonaController {
     }
 
     // --- PROCESA EL FORMULARIO DE CREACIÓN ---
-    // (Tu 'create' renombrado a 'store' para seguir el patrón)
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (
@@ -76,7 +78,7 @@ class PersonaController {
     // Mostrar el formulario de edición de persona
     public function edit($idpersona) {
         $this->persona->idpersona = $idpersona;
-        $persona = $this->persona->readOne();
+        $persona = $this->persona->readOne(); // $persona ya tiene los JOINs
 
         if (!$persona) {
             die("Error: No se encontró la persona.");
@@ -92,17 +94,16 @@ class PersonaController {
     // Muestra el registro completo (vista detallada)
     public function registro($idpersona) {
         $this->persona->idpersona = $idpersona;
-        $persona = $this->persona->readOne();
+        $persona = $this->persona->readOne(); // $persona ya tiene los JOINs (sexo_nombre, etc.)
 
         if (!$persona) {
             die("Error: No se encontró la persona.");
         }
         
         // Cargar datos relacionados
-        $sexos = $this->sexo->read(); // Para mostrar nombre de sexo
-        $estadosciviles = $this->estadocivil->read(); // Para mostrar nombre estado civil
-        $telefonos = $this->telefono->readByPersona($idpersona);
-        $direcciones = $this->direccion->readByPersona($idpersona);
+        // $sexos y $estadosciviles ya no son necesarios aquí porque $persona tiene los nombres
+        $telefonos = $this->telefono->readByPersona($idpersona); // Asumiendo que Telefono.php tiene readByPersona()
+        $direcciones = $this->direccion->readByPersona($idpersona); // Asumiendo que Direccion.php tiene readByPersona()
 
 
         require_once __DIR__ . '/../views/persona/registro.php';
@@ -137,7 +138,6 @@ class PersonaController {
     }
 
     // Mostrar la confirmación de eliminación de persona
-    // (Tu 'deleteForm' renombrado a 'eliminar' para seguir el patrón)
     public function eliminar($idpersona) {
         $this->persona->idpersona = $idpersona;
         $persona = $this->persona->readOne();
@@ -174,14 +174,13 @@ class PersonaController {
             ob_end_clean();
         }
 
-        $personas = $this->persona->getAll(); // Asumiendo que getAll() existe
+        // --- CORRECCIÓN AQUÍ ---
+        // El método getAll() fue eliminado del Modelo. Usamos read() en su lugar.
+        $personas = $this->persona->read(); 
         header('Content-Type: application/json');
         echo json_encode($personas);
         exit;
     }
 }
-
-// --- ELIMINADO ---
-// Se borró todo el código de enrutamiento que estaba aquí,
-// ya que 'public/index.php' se encarga de eso.
 ?>
+
