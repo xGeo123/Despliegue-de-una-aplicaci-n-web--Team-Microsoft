@@ -1,14 +1,15 @@
+<?php
+    // Estandarizar definiendo basePath
+    $basePath = '/public/'; 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Direcciones</title>
-    <link rel="stylesheet" href="/public/css/style.css">
-    <?php
-        // Estandarizar definiendo basePath
-        $basePath = '/public/'; 
-    ?>
+    <!-- CORREGIDO: Usar basePath para CSS -->
+    <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css"> 
 </head>
 <body>
 
@@ -21,22 +22,23 @@
             <tr>
                 <th>ID</th>
                 <th>Persona</th>
-                <th>Nombre</th>
+                <th>Nombre Dirección</th> <!-- Título de columna ajustado -->
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($direccions) && is_array($direccions)): ?>
-                <?php foreach ($direccions as $direccion): ?>
+            <!-- CORREGIDO: Usar $direcciones (plural correcto) -->
+            <?php if (!empty($direcciones) && is_array($direcciones)): ?>
+                <?php foreach ($direcciones as $direccion): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($direccion['iddireccion']); ?></td>
-                        <td><?php echo htmlspecialchars($direccion['lapersona']); ?></td>
+                        <!-- CORREGIDO: Usar 'persona_nombre' del JOIN y '??' -->
+                        <td><?php echo htmlspecialchars($direccion['persona_nombre'] ?? 'N/A'); ?></td>
                         <td><?php echo htmlspecialchars($direccion['nombre']); ?></td>
                         <td>
                             <a href="<?php echo $basePath; ?>direccion/edit?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>">
                                 <button>Editar</button>
                             </a>
-                            <!-- CORREGIDO: 'onclick' eliminado (ya tenemos página de confirmación) -->
                             <a href="<?php echo $basePath; ?>direccion/eliminar?iddireccion=<?php echo htmlspecialchars($direccion['iddireccion']); ?>">
                                 <button>Eliminar</button>
                             </a>
@@ -52,6 +54,8 @@
     </table>
 </div>
 
-<script src="/public/js/script.js"></script>
+<!-- CORREGIDO: Usar basePath para JS -->
+<script src="<?php echo $basePath; ?>js/script.js"></script> 
 </body>
 </html>
+

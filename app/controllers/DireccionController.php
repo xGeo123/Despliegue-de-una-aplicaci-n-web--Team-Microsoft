@@ -26,13 +26,12 @@ class DireccionController {
         // 'read1()' parecía un typo, lo cambié a 'read()'
         $direcciones = $this->direccion->read(); 
 
-        // --- DEBUG ---
-        // Vamos a ver qué datos devuelve el modelo
-        echo "<pre>"; // Para formatear la salida
-        var_dump($direcciones); 
-        echo "</pre>";
-        die(); // Detenemos la ejecución aquí para ver el resultado
-        // --- FIN DEBUG ---
+        // --- DEBUG ELIMINADO ---
+        // echo "<pre>"; 
+        // var_dump($direcciones); 
+        // echo "</pre>";
+        // die(); 
+        // --- FIN DEBUG ELIMINADO ---
 
         // Si los datos se ven bien en el var_dump, puedes quitar las líneas de debug
         require_once __DIR__ . '/../views/direccion/index.php';
