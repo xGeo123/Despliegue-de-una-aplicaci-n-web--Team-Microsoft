@@ -6,7 +6,8 @@ $basePath = '/public/';
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Eliminar Sexo</title>
+    <title>Eliminar Persona</title>
+    <!-- Estilos (copiados de sexo/delete.php) -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,7 +69,6 @@ $basePath = '/public/';
             color: #333;
         }
 
-        /* Estilo para el enlace 'Volver' */
         .form-container a {
             display: block;
             text-align: center;
@@ -90,29 +90,28 @@ $basePath = '/public/';
 
         <!-- 
           ACCIÓN CORREGIDA: 
-          Debe apuntar a la RUTA '/public/sexo/delete'
+          Debe apuntar a la RUTA '/public/persona/delete'
         -->
-        <form action="<?php echo $basePath; ?>sexo/delete" method="POST">
+        <form action="<?php echo $basePath; ?>persona/delete" method="POST">
             
             <!-- 
               CORREGIDO: 
-              Cambiado 'idsexo' a 'id' para que coincida con la PK de la BD
+              Debe ser 'idpersona' y usar la variable $persona
             -->
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($sexo['id']); ?>">
+            <input type="hidden" name="idpersona" value="<?php echo htmlspecialchars($persona['idpersona']); ?>">
             
-            <label for="nombre">Nombre:</label>
+            <label for="nombre">Nombre Completo:</label>
             <!-- 
               CAMBIO: 
-              Cambiado a 'readonly' (solo lectura).
-              No se debe editar un registro al eliminarlo.
+              Cambiado a 'readonly' y usando la variable $persona
             -->
-            <input type="text" name="nombre" id="nombre" value="<?php echo htmlspecialchars($sexo['nombre']); ?>" readonly>
+            <input type="text" name="nombre" id="nombre" value="<?php echo htmlspecialchars($persona['nombres'] . ' ' . $persona['apellidos']); ?>" readonly>
             
             <input type="submit" value="Confirmar Eliminación">
         </form>
 
         <!-- Enlace para Volver -->
-        <a href="<?php echo $basePath; ?>sexo">Volver al listado</a>
+        <a href="<?php echo $basePath; ?>persona">Volver al listado</a>
     </div>
 
 </body>

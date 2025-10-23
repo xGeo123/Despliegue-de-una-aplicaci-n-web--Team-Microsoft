@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Agregar Teléfono</title>
+    <title>Agregar Direccion</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -74,10 +74,10 @@
             <?php endforeach; ?>
         </select>
 
-        <label for="nombre">Número de Teléfono:</label>
+        <label for="nombre">Direccion:</label>
         <input type="text" name="nombre" id="nombre" required>
 
-        <input type="submit" value="Guardar Teléfono">
+        <input type="submit" value="Guardar Direccion">
     </form>
 </div>
 
