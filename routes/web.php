@@ -5,7 +5,7 @@ session_start();
 require_once '../app/controllers/SexoController.php';
 
 $requestUri = $_SERVER["REQUEST_URI"];
-$basePath = '/eysphp/public/';
+$basePath = '/public/';
 $route = str_replace($basePath, '', $requestUri);
 
 if (strpos($route, 'index.php') === 0) {
