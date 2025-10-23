@@ -2,10 +2,6 @@
 session_start();
 
 // --- CONTROLADORES ---
-// Rutas corregidas usando __DIR__ para construir una ruta absoluta y robusta.
-// __DIR__ es el directorio del archivo actual (asumiendo 'routes/web.php' o similar)
-// Si este archivo está en 'public/index.php', la ruta debe ser 'app/controllers/...'
-// Asumiré que este archivo está en 'public/' basado en la estructura de 'apple6b/public/'
 require_once __DIR__ . '/../app/controllers/PersonaController.php';
 require_once __DIR__ . '/../app/controllers/SexoController.php';
 require_once __DIR__ . '/../app/controllers/DireccionController.php';
@@ -14,30 +10,90 @@ require_once __DIR__ . '/../app/controllers/EstadocivilController.php';
 
 // --- ANÁLISIS DE RUTA ---
 $requestUri = $_SERVER["REQUEST_URI"];
-// Asegúrate de que este sea el basePath correcto para tu proyecto
 $basePath = '/public/'; 
 
-// Remover el prefijo basePath
-$route = str_replace($basePath, '', $requestUri);
-
-// Limpiar la ruta (lógica mejorada del primer archivo)
-if (strpos($route, 'index.php') === 0) {
-    $route = str_replace('index.php', '', $route);
+// Obtener la ruta relativa al basePath
+$route = '';
+if (strpos($requestUri, $basePath) === 0) {
+    $route = substr($requestUri, strlen($basePath));
 }
+
+// Limpiar la ruta
 $route = strtok($route, '?'); // Quitar parámetros GET
 $route = trim($route, '/'); // Quitar slashes al inicio y final
 
 // --- MENÚ PRINCIPAL ---
-// Mostrar el menú si no se ha solicitado ninguna acción específica
-if (empty($route) || $route === '/') {
-    echo "<h1>Menú de Tablas</h1>";
-    echo "<ul>";
-    echo "<li><a href='" . $basePath . "persona/index'>Personas</a></li>";
-    echo "<li><a href='" . $basePath . "sexo/index'>Sexos</a></li>";
-    echo "<li><a href='" . $basePath . "direccion/index'>Direcciones</a></li>";
-    echo "<li><a href='" . $basePath . "telefono/index'>Teléfonos</a></li>";
-    echo "<li><a href='" . $basePath . "estadocivil/index'>Estados Civiles</a></li>";
-    echo "</ul>";
+// Si después de limpiar, la ruta está vacía, mostrar menú
+if (empty($route)) { 
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal</title>
+    <!-- Incluir CSS principal -->
+    <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css">
+    <style>
+        /* Estilos específicos para el menú principal */
+        body {
+            font-family: Arial, sans-serif; /* Fuente consistente */
+            background-color: #f4f6f8;
+            padding-top: 40px;
+        }
+        .container {
+             /* Usar estilos del CSS si existen, o estos básicos */
+            max-width: 600px; 
+            margin: auto;
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .menu-list li {
+            margin-bottom: 15px; /* Espacio entre botones */
+        }
+        .menu-list a {
+            display: block; /* Hacer que el enlace ocupe todo el li */
+            padding: 12px 20px;
+            background-color: #007BFF; /* Azul similar al botón 'Agregar' */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px; /* Bordes redondeados */
+            text-align: center;
+            font-size: 16px;
+            transition: background-color 0.2s ease; /* Transición suave */
+        }
+        .menu-list a:hover {
+            background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Menú de Tablas</h1>
+        <ul class="menu-list">
+            <li><a href='<?php echo $basePath; ?>persona/index'>Personas</a></li>
+            <li><a href='<?php echo $basePath; ?>sexo/index'>Sexos</a></li>
+            <li><a href='<?php echo $basePath; ?>direccion/index'>Direcciones</a></li>
+            <li><a href='<?php echo $basePath; ?>telefono/index'>Teléfonos</a></li>
+            <li><a href='<?php echo $basePath; ?>estadocivil/index'>Estados Civiles</a></li>
+        </ul>
+    </div>
+</body>
+</html>
+<?php
 } else {
     // --- ENRUTADOR PRINCIPAL ---
     switch ($route) {
@@ -48,11 +104,11 @@ if (empty($route) || $route === '/') {
             $controller = new PersonaController();
             $controller->index();
             break;
-        case 'persona/create': // Muestra formulario
+        case 'persona/create': 
             $controller = new PersonaController();
-            $controller->create(); // Método estandarizado
+            $controller->create(); 
             break;
-        case 'persona/store': // Procesa formulario
+        case 'persona/store': 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $controller = new PersonaController();
                 $controller->store();
@@ -72,7 +128,7 @@ if (empty($route) || $route === '/') {
                 $controller->update();
             }
             break;
-        case 'persona/eliminar': // Muestra confirmación
+        case 'persona/eliminar': 
              if (isset($_GET['idpersona'])) {
                 $controller = new PersonaController();
                 $controller->eliminar($_GET['idpersona']);
@@ -80,13 +136,13 @@ if (empty($route) || $route === '/') {
                 echo "Error: Falta el ID de persona para eliminar.";
             }
             break;
-        case 'persona/delete': // Procesa borrado
+        case 'persona/delete': 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $controller = new PersonaController();
                 $controller->delete();
             }
             break;
-        case 'persona/view': // Vista de registro
+        case 'persona/view': 
             if (isset($_GET['idpersona'])) {
                 $controller = new PersonaController();
                 $controller->registro($_GET['idpersona']);
@@ -112,9 +168,9 @@ if (empty($route) || $route === '/') {
             }
             break;
         case 'sexo/edit':
-            if (isset($_GET['idsexo'])) { 
+             if (isset($_GET['id'])) { 
                 $controller = new SexoController();
-                $controller->edit($_GET['idsexo']);
+                $controller->edit($_GET['id']); 
             } else {
                 echo "Error: Falta el ID de sexo para editar.";
             }
@@ -126,11 +182,11 @@ if (empty($route) || $route === '/') {
             }
             break;
         case 'sexo/eliminar': 
-            if (isset($_GET['id'])) { 
+             if (isset($_GET['id'])) { 
                 $controller = new SexoController();
-                $controller->eliminar($_GET['id']);
+                $controller->eliminar($_GET['id']); 
             } else {
-                echo "Error: Falta el ID de sexo para eliminar.";
+                echo "Error: Falta el ID de sexo para eliminar."; 
             }
             break;
         case 'sexo/delete': 
@@ -148,7 +204,7 @@ if (empty($route) || $route === '/') {
             break;
         case 'direccion/create':
             $controller = new DireccionController();
-            $controller->create(); // Estandarizado
+            $controller->create(); 
             break;
         case 'direccion/store':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -193,7 +249,7 @@ if (empty($route) || $route === '/') {
             break;
         case 'telefono/create':
             $controller = new TelefonoController();
-            $controller->create(); // Estandarizado
+            $controller->create(); 
             break;
         case 'telefono/store':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -202,7 +258,6 @@ if (empty($route) || $route === '/') {
             }
             break;
         case 'telefono/edit':
-            // CAMBIO: Ahora buscamos 'idtelefono' para que coincida con la BD y el Controller.
             if (isset($_GET['idtelefono'])) { 
                 $controller = new TelefonoController();
                 $controller->edit($_GET['idtelefono']);
@@ -217,7 +272,6 @@ if (empty($route) || $route === '/') {
             }
             break;
         case 'telefono/eliminar':
-             // CAMBIO: Ahora buscamos 'idtelefono' para que coincida con la BD y el Controller.
              if (isset($_GET['idtelefono'])) {
                 $controller = new TelefonoController();
                 $controller->eliminar($_GET['idtelefono']);
@@ -279,7 +333,13 @@ if (empty($route) || $route === '/') {
 
         // --- RUTA DEFAULT ---
         default:
-            echo "Error 404: Página no encontrada. (Ruta: '$route')";
+            // Intentar cargar una vista estática si existe (opcional)
+            // $staticView = __DIR__ . '/../app/views/' . $route . '.php';
+            // if (file_exists($staticView)) {
+            //     require_once $staticView;
+            // } else {
+                 echo "Error 404: Página no encontrada. (Ruta: '$route')";
+            // }
             break;
     }
 }
