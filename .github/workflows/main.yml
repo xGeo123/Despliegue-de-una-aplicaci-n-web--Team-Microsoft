@@ -32,7 +32,7 @@ jobs:
         
         # A una carpeta en el servidor llamada 'eysphp'
         # Esto imitará perfectamente tu entorno de XAMPP
-        server-dir: /htdocs/Despliegue-de-una-aplicaci-n-web--Team-Microsoft/
+        server-dir: /htdocs/
         
         # Borra archivos viejos del servidor (opcional pero recomendado)
         delete: true
