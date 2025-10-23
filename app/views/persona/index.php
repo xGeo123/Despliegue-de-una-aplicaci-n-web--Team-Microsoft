@@ -36,8 +36,19 @@
                         <td><?php echo htmlspecialchars($persona['nombres']); ?></td>
                         <td><?php echo htmlspecialchars($persona['apellidos']); ?></td>
                         <td><?php echo htmlspecialchars($persona['fechanacimiento']); ?></td>
-                        <td><?php echo htmlspecialchars($persona['elsexo']); ?></td> 
-                        <td><?php echo htmlspecialchars($persona['elestadocivil']); ?></td> 
+                        
+                        <!-- 
+                          CORREGIDO: 
+                          Cambiado de 'elsexo' a 'sexo_nombre' para coincidir con registro.php
+                        -->
+                        <td><?php echo htmlspecialchars($persona['sexo_nombre'] ?? $persona['idsexo']); ?></td> 
+                        
+                        <!-- 
+                          CORREGIDO: 
+                          Cambiado de 'elestadocivil' a 'estadocivil_nombre' para coincidir con registro.php
+                        -->
+                        <td><?php echo htmlspecialchars($persona['estadocivil_nombre'] ?? $persona['idestadocivil']); ?></td> 
+                        
                         <td>
                             <a href="<?php echo $basePath; ?>persona/view?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>View</button>
@@ -45,12 +56,6 @@
                             <a href="<?php echo $basePath; ?>persona/edit?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Editar</button>
                             </a>
-                            <!-- 
-                              CORREGIDO:
-                              1. Ruta cambiada de 'deleteForm' a 'eliminar'.
-                              2. Parámetro cambiado de 'id' a 'idpersona'.
-                              3. 'onclick' eliminado (ya tenemos página de confirmación).
-                            -->
                             <a href="<?php echo $basePath; ?>persona/eliminar?idpersona=<?php echo htmlspecialchars($persona['idpersona']); ?>">
                                 <button>Eliminar</button>
                             </a>
@@ -69,3 +74,4 @@
 <script src="/public/js/script.js"></script>
 </body>
 </html>
+
