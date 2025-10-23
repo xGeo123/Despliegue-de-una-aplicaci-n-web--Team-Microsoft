@@ -15,7 +15,7 @@ require_once __DIR__ . '/../app/controllers/EstadocivilController.php';
 // --- ANÁLISIS DE RUTA ---
 $requestUri = $_SERVER["REQUEST_URI"];
 // Asegúrate de que este sea el basePath correcto para tu proyecto
-$basePath = '/apple6b/public/'; 
+$basePath = '/public/'; 
 
 // Remover el prefijo basePath
 $route = str_replace($basePath, '', $requestUri);

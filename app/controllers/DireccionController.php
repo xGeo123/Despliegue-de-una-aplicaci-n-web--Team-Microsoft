@@ -12,7 +12,7 @@ class DireccionController {
     private $direccion;
     private $persona; // Necesario para los formularios
     private $db;
-    private $basePath = '/apple6b/public/'; // Definido en tu index.php
+    private $basePath = '/public/'; // Definido en tu index.php
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
