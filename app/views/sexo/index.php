@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Sexos</title>
+    <?php
+        // Define la ruta base para que los enlaces funcionen
+        $basePath = '/public/'; 
+    ?>
     <link rel="stylesheet" href="<?php echo $basePath; ?>css/style.css"> 
     <style>
         /* Estilos adicionales para el botón Volver */
@@ -26,6 +30,7 @@
 <body>
 
 <div class="container">
+    
     <h1>Listar  Sexos</h1>
     <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
    <a href="/public/sexo/create"><button>Agregar</button></a>
