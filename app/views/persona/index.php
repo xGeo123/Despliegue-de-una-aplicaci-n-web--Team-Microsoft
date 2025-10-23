@@ -49,7 +49,7 @@
                           CORRECCIÓN 2: 
                           Usar 'estadocivil_nombre' (de la consulta JOIN) en lugar de 'elestadocivil'
                         -->
-                        <td><?php echo htmlspecialchars($persona['nombre'] ?? $persona['idestadocivil']); ?></td> 
+                        <td><?php echo htmlspecialchars($persona['estadocivil_nombre'] ?? $persona['idestadocivil']); ?></td> 
                         
                         <td>
                             <!-- CORRECCIÓN 1: Los enlaces deben usar el basePath -->
