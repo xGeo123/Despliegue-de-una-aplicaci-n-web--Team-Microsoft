@@ -1,3 +1,7 @@
+<?php
+// Define la ruta base para que los enlaces y el 'action' del formulario funcionen
+$basePath = '/public/';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -52,26 +56,48 @@
             cursor: pointer;
             font-size: 16px;
             width: 100%;
+            margin-bottom: 20px; /* Espacio para el enlace 'Volver' */
         }
 
         input[type="submit"]:hover {
             background-color: #0056b3;
+        }
+
+        /* Estilo para el enlace 'Volver' */
+        .form-container a {
+            display: block;
+            text-align: center;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2>Agregar Teléfono</h2>
-    <form action="../../app/controllers/DireccionController.php?action=create" method="POST">                                                                              
+    <!-- CORRECCIÓN: Etiqueta h2 cerrada correctamente -->
+    <h2>Agregar Direccion</h2>
+    
+    <!-- 
+      ACCIÓN CORREGIDA: 
+      Debe apuntar a la RUTA '/public/direccion/store'
+    -->
+    <form action="<?php echo $basePath; ?>direccion/store" method="POST"> 
         <label for="idpersona">Persona:</label>
         <select name="idpersona" id="idpersona" required>
             <option value="">Seleccione una persona</option>
-            <?php foreach ($personas as $persona): ?>
-                <option value="<?= $persona['idpersona'] ?>">
-                    <?= $persona['apellidos'] . ' ' . $persona['nombres'] ?>
-                </option>
-            <?php endforeach; ?>
+            <?php if (!empty($personas)): // Buena práctica: comprobar si $personas existe ?>
+                <?php foreach ($personas as $persona): ?>
+                    <option value="<?= $persona['idpersona'] ?>">
+                        <?= htmlspecialchars($persona['apellidos'] . ' ' . $persona['nombres']) ?>
+                    </option>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </select>
 
         <label for="nombre">Direccion:</label>
@@ -79,6 +105,9 @@
 
         <input type="submit" value="Guardar Direccion">
     </form>
+
+    <!-- Enlace para Volver -->
+    <a href="<?php echo $basePath; ?>direccion">Volver al listado</a>
 </div>
 
 </body>
