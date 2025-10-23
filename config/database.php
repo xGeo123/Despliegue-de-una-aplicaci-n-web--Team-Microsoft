@@ -1,9 +1,9 @@
 <?php
 class Database {
-    private $host = "localhost";
-    private $db_name = "ingesoft";
-    private $username = "estudiante";
-    private $password = "estudiante1234";
+    private $host = "sql213.infinityfree.com";
+    private $db_name = "if0_40231997_basededatos";
+    private $username = "if0_40231997";
+    private $password = "OVZQRIM5kDC69";
     private $conn;
 
     public function getConnection() {
