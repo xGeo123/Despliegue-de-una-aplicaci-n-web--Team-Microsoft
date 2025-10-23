@@ -25,6 +25,16 @@ class DireccionController {
         // Asumiendo que el método se llama 'read()' o 'readAll()'
         // 'read1()' parecía un typo, lo cambié a 'read()'
         $direcciones = $this->direccion->read(); 
+
+        // --- DEBUG ---
+        // Vamos a ver qué datos devuelve el modelo
+        echo "<pre>"; // Para formatear la salida
+        var_dump($direcciones); 
+        echo "</pre>";
+        die(); // Detenemos la ejecución aquí para ver el resultado
+        // --- FIN DEBUG ---
+
+        // Si los datos se ven bien en el var_dump, puedes quitar las líneas de debug
         require_once __DIR__ . '/../views/direccion/index.php';
     }
 
@@ -135,7 +145,8 @@ class DireccionController {
             ob_end_clean();
         }
 
-        $direcciones = $this->direccion->getAll(); // Asumiendo que getAll() existe
+        // CORREGIDO: Llamar a read() en lugar de getAll()
+        $direcciones = $this->direccion->read(); 
         header('Content-Type: application/json');
         echo json_encode($direcciones);
         exit;
@@ -146,3 +157,4 @@ class DireccionController {
 // Se borró todo el código de enrutamiento que estaba aquí,
 // ya que 'public/index.php' se encarga de eso.
 ?>
+
