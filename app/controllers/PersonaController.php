@@ -17,7 +17,7 @@ class PersonaController {
     private $telefono;
     private $direccion;
     private $db;
-    private $basePath = '/apple6b/public/'; // Definido en tu index.php
+    private $basePath = '/public/'; // Definido en tu index.php
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
