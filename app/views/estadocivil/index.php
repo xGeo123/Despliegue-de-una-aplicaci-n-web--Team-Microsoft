@@ -20,6 +20,7 @@
       El enlace debe apuntar a la RUTA '/public/estadocivil/create'
       NO al archivo '/app/views/estadocivil/create.php'
     -->
+      <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
     <a href="<?php echo $basePath; ?>estadocivil/create"><button>Agregar</button></a>
 
     <table>

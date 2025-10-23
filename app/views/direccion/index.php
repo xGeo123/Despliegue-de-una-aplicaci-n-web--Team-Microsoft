@@ -15,6 +15,7 @@
 
 <div class="container">
     <h1>Listar Direcciones</h1>
+    <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
     <a href="<?php echo $basePath; ?>direccion/create"><button>Agregar</button></a>
 
     <table>

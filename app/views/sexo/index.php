@@ -10,6 +10,7 @@
 
 <div class="container">
     <h1>Listar  Sexos</h1>
+    <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
    <a href="/public/sexo/create"><button>Agregar</button></a>
 
     <table>

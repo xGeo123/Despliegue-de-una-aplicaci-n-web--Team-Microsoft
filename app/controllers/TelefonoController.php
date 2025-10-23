@@ -2,17 +2,17 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Rutas corregidas usando __DIR__ (asumiendo que este archivo está en /app/controllers)
+// Rutas corregidas usando __DIR__
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../app/models/Telefono.php';
-require_once __DIR__ . '/../../app/models/Persona.php';
+require_once __DIR__ . '/../models/Telefono.php'; // Corregido: '../models/'
+require_once __DIR__ . '/../models/Persona.php';  // Corregido: '../models/'
 
 class TelefonoController {
     private $telefono;
     private $db;
     private $persona;
-    // Definir el basePath para las redirecciones
-    private $basePath = '/apple6b/public/';
+    // CORREGIDO: basePath actualizado
+    private $basePath = '/public/'; 
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
@@ -22,17 +22,18 @@ class TelefonoController {
 
     // Mostrar todos los teléfonos
     public function index() {
-        $telefonos = $this->telefono->read1(); // Asumo que read1() es correcto
-        require_once __DIR__ . '/../../app/views/telefono/index.php';
+        // CORREGIDO: Llamar al método read() que tiene el JOIN
+        $telefonos = $this->telefono->read(); 
+        require_once __DIR__ . '/../views/telefono/index.php'; // Corregido: '../views/'
     }
 
-    // Muestra el formulario de creación (antes 'createForm')
+    // Muestra el formulario de creación
     public function create() {
         $personas = $this->persona->read();
-        require_once __DIR__ . '/../../app/views/telefono/create.php';
+        require_once __DIR__ . '/../views/telefono/create.php'; // Corregido: '../views/'
     }
 
-    // Procesa el formulario de creación (antes 'create')
+    // Procesa el formulario de creación
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['numero']) && isset($_POST['idpersona'])) {
@@ -40,18 +41,23 @@ class TelefonoController {
                 $this->telefono->numero = $_POST['numero'];
                 
                 if ($this->telefono->create()) {
-                    header('Location: ' . $this->basePath . 'telefono');
+                    // CORREGIDO: Redirección limpia
+                    header('Location: ' . $this->basePath . 'telefono?msg=created');
                     exit;
                 } else {
-                    echo "Error al crear el teléfono";
+                     header('Location: ' . $this->basePath . 'telefono?msg=error');
+                     exit;
                 }
             } else {
-                echo "Faltan datos";
+                 header('Location: ' . $this->basePath . 'telefono/create?msg=missingdata');
+                 exit;
             }
         } else {
-            echo "Método incorrecto";
+             header('Location: ' . $this->basePath . 'telefono/create');
+             exit;
         }
-        die();
+        // No debería llegar aquí, pero por si acaso
+        // die(); // Eliminado
     }
 
     // Muestra el formulario de edición
@@ -64,19 +70,19 @@ class TelefonoController {
             die("Error: No se encontró el registro.");
         }
 
-        require_once __DIR__ . '/../../app/views/telefono/edit.php';
+        require_once __DIR__ . '/../views/telefono/edit.php'; // Corregido: '../views/'
     }
 
     // Muestra la confirmación para eliminar
-    public function eliminar($idtelefono) { // Corregido el parámetro
-        $this->telefono->idtelefono = $idtelefono; // Usar el parámetro
+    public function eliminar($idtelefono) { 
+        $this->telefono->idtelefono = $idtelefono; 
         $telefono = $this->telefono->readOne();
 
         if (!$telefono) {
             die("Error: No se encontró el registro.");
         }
 
-        require_once __DIR__ . '/../../app/views/telefono/delete.php';
+        require_once __DIR__ . '/../views/telefono/delete.php'; // Corregido: '../views/'
     }
 
     // Procesa la actualización
@@ -88,48 +94,56 @@ class TelefonoController {
                 $this->telefono->idtelefono = $_POST['idtelefono'];
                 
                 if ($this->telefono->update()) {
-                    header('Location: ' . $this->basePath . 'telefono');
-                    exit;
-                } else {
-                    echo "Error al actualizar el teléfono";
-                }
-            } else {
-                echo "Faltan datos";
-            }
-        } else {
-            echo "Método incorrecto";
-        }
-        die();
-    }
-
-    // Procesa la eliminación
-    public function delete() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Corregido: buscar 'idtelefono' en lugar de 'id'
-            if (isset($_POST['idtelefono'])) { 
-                $this->telefono->idtelefono = $_POST['idtelefono'];
-                
-                if ($this->telefono->delete()) {
-                    header('Location: ' . $this->basePath . 'telefono');
+                    // CORREGIDO: Redirección limpia
+                    header('Location: ' . $this->basePath . 'telefono?msg=updated');
                     exit;
                 } else {
                     header('Location: ' . $this->basePath . 'telefono?msg=error');
                     exit;
                 }
             } else {
-                echo "Faltan datos";
+                 $id = $_POST['idtelefono'] ?? 0;
+                 header('Location: ' . $this->basePath . 'telefono/edit?idtelefono=' . $id . '&msg=missingdata');
+                 exit;
             }
         } else {
-            echo "Método incorrecto";
+             header('Location: ' . $this->basePath . 'telefono');
+             exit;
         }
-        die();
+        // die(); // Eliminado
+    }
+
+    // Procesa la eliminación
+    public function delete() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['idtelefono'])) { 
+                $this->telefono->idtelefono = $_POST['idtelefono'];
+                
+                if ($this->telefono->delete()) {
+                    // CORREGIDO: Redirección limpia
+                    header('Location: ' . $this->basePath . 'telefono?msg=deleted');
+                    exit;
+                } else {
+                    header('Location: ' . $this->basePath . 'telefono?msg=error');
+                    exit;
+                }
+            } else {
+                 header('Location: ' . $this->basePath . 'telefono?msg=missingid');
+                 exit;
+            }
+        } else {
+             header('Location: ' . $this->basePath . 'telefono');
+             exit;
+        }
+       // die(); // Eliminado
     }
 
     public function api() {
         while (ob_get_level()) {
             ob_end_clean();
         }
-        $telefonos = $this->telefono->getAll();
+        // CORREGIDO: Usar read() en lugar de getAll()
+        $telefonos = $this->telefono->read(); 
         header('Content-Type: application/json');
         echo json_encode($telefonos);
         exit;
@@ -137,6 +151,5 @@ class TelefonoController {
 }
 
 // --- TODO EL BLOQUE DEL ENRUTADOR HA SIDO ELIMINADO ---
-// (El 'if (isset($_GET['action']))' no debe estar aquí)
 ?>
 

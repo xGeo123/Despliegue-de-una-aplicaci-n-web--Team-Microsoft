@@ -16,6 +16,7 @@
 <div class="container">
     <h1>Lista de Personas</h1>
     <!-- CORRECCIÓN 1: El enlace 'Agregar' debe usar el basePath -->
+     <a href="<?php echo $basePath; ?>" class="back-button">Volver al Menú Principal</a> 
     <a href="<?php echo $basePath; ?>persona/create"><button>Agregar</button></a>
 
     <table>
