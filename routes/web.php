@@ -2,12 +2,15 @@
 session_start();
 
 // --- CONTROLADORES ---
-// Incluir todos los controladores necesarios
-require_once '../app/controllers/PersonaController.php';
-require_once '../app/controllers/SexoController.php';
-require_once '../app/controllers/DireccionController.php';
-require_once '../app/controllers/TelefonoController.php';
-require_once '../app/controllers/EstadocivilController.php';
+// Rutas corregidas usando __DIR__ para construir una ruta absoluta y robusta.
+// __DIR__ es el directorio del archivo actual (asumiendo 'routes/web.php' o similar)
+// Si este archivo está en 'public/index.php', la ruta debe ser 'app/controllers/...'
+// Asumiré que este archivo está en 'public/' basado en la estructura de 'apple6b/public/'
+require_once __DIR__ . '/../app/controllers/PersonaController.php';
+require_once __DIR__ . '/../app/controllers/SexoController.php';
+require_once __DIR__ . '/../app/controllers/DireccionController.php';
+require_once __DIR__ . '/../app/controllers/TelefonoController.php';
+require_once __DIR__ . '/../app/controllers/EstadocivilController.php';
 
 // --- ANÁLISIS DE RUTA ---
 $requestUri = $_SERVER["REQUEST_URI"];
@@ -39,15 +42,21 @@ if (empty($route) || $route === '/') {
     // --- ENRUTADOR PRINCIPAL ---
     switch ($route) {
 
-        // --- RUTAS DE PERSONA ---
+        // --- RUTAS DE PERSONA (CRUD Completo) ---
         case 'persona':
         case 'persona/index':
             $controller = new PersonaController();
             $controller->index();
             break;
-        case 'persona/create':
+        case 'persona/create': // Muestra formulario
             $controller = new PersonaController();
-            $controller->createForm(); // Asumo que createForm muestra el formulario
+            $controller->create(); // Método estandarizado
+            break;
+        case 'persona/store': // Procesa formulario
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller = new PersonaController();
+                $controller->store();
+            }
             break;
         case 'persona/edit':
             if (isset($_GET['idpersona'])) {
@@ -63,27 +72,39 @@ if (empty($route) || $route === '/') {
                 $controller->update();
             }
             break;
-        case 'persona/view':
+        case 'persona/eliminar': // Muestra confirmación
+             if (isset($_GET['idpersona'])) {
+                $controller = new PersonaController();
+                $controller->eliminar($_GET['idpersona']);
+            } else {
+                echo "Error: Falta el ID de persona para eliminar.";
+            }
+            break;
+        case 'persona/delete': // Procesa borrado
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller = new PersonaController();
+                $controller->delete();
+            }
+            break;
+        case 'persona/view': // Vista de registro
             if (isset($_GET['idpersona'])) {
                 $controller = new PersonaController();
-                $controller->registro($_GET['idpersona']); // Asumo que 'registro' es para ver
+                $controller->registro($_GET['idpersona']);
             } else {
                 echo "Error: Falta el ID de persona para ver.";
             }
             break;
 
-        // --- RUTAS DE SEXO (Fusionadas) ---
+        // --- RUTAS DE SEXO (CRUD Completo) ---
         case 'sexo':
         case 'sexo/index':
             $controller = new SexoController();
             $controller->index();
             break;
-        // Ruta de 'create' (del archivo 1)
         case 'sexo/create':
             $controller = new SexoController();
-            $controller->create(); // Asumo que 'create' muestra el formulario
+            $controller->create();
             break;
-        // Ruta de 'store' (del archivo 1)
         case 'sexo/store':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $controller = new SexoController();
@@ -91,7 +112,7 @@ if (empty($route) || $route === '/') {
             }
             break;
         case 'sexo/edit':
-            if (isset($_GET['idsexo'])) { // Corregido a 'idsexo' según el archivo 2
+            if (isset($_GET['idsexo'])) { 
                 $controller = new SexoController();
                 $controller->edit($_GET['idsexo']);
             } else {
@@ -104,22 +125,22 @@ if (empty($route) || $route === '/') {
                 $controller->update();
             }
             break;
-        case 'sexo/eliminar': // Formulario de confirmación
-            if (isset($_GET['idsexo'])) { // Corregido a 'idsexo'
+        case 'sexo/eliminar': 
+            if (isset($_GET['idsexo'])) { 
                 $controller = new SexoController();
                 $controller->eliminar($_GET['idsexo']);
             } else {
                 echo "Error: Falta el ID de sexo para eliminar.";
             }
             break;
-        case 'sexo/delete': // Acción de borrado
+        case 'sexo/delete': 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $controller = new SexoController();
                 $controller->delete();
             }
             break;
 
-        // --- RUTAS DE DIRECCION ---
+        // --- RUTAS DE DIRECCION (CRUD Completo) ---
         case 'direccion':
         case 'direccion/index':
             $controller = new DireccionController();
@@ -127,7 +148,13 @@ if (empty($route) || $route === '/') {
             break;
         case 'direccion/create':
             $controller = new DireccionController();
-            $controller->createForm();
+            $controller->create(); // Estandarizado
+            break;
+        case 'direccion/store':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller = new DireccionController();
+                $controller->store();
+            }
             break;
         case 'direccion/edit':
             if (isset($_GET['iddireccion'])) {
@@ -143,8 +170,22 @@ if (empty($route) || $route === '/') {
                 $controller->update();
             }
             break;
+        case 'direccion/eliminar':
+            if (isset($_GET['iddireccion'])) {
+                $controller = new DireccionController();
+                $controller->eliminar($_GET['iddireccion']);
+            } else {
+                echo "Error: Falta el ID de dirección para eliminar.";
+            }
+            break;
+        case 'direccion/delete':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller = new DireccionController();
+                $controller->delete();
+            }
+            break;
 
-        // --- RUTAS DE TELEFONO ---
+        // --- RUTAS DE TELEFONO (CRUD Completo) ---
         case 'telefono':
         case 'telefono/index':
             $controller = new TelefonoController();
@@ -152,12 +193,21 @@ if (empty($route) || $route === '/') {
             break;
         case 'telefono/create':
             $controller = new TelefonoController();
-            $controller->createForm();
+            $controller->create(); // Estandarizado
+            break;
+        case 'telefono/store':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller = new TelefonoController();
+                $controller->store();
+            }
             break;
         case 'telefono/edit':
-            if (isset($_GET['idtelefono'])) {
+            // Corregido: tu 'index.php' original buscaba 'idtelefono', pero tu controller 'id'.
+            // Usaré 'id' basado en el controller que corregimos (TelefonoController.php)
+            // Si tu GET param es 'idtelefono', cambia 'id' por 'idtelefono' aquí.
+            if (isset($_GET['id'])) { 
                 $controller = new TelefonoController();
-                $controller->edit($_GET['idtelefono']);
+                $controller->edit($_GET['id']);
             } else {
                 echo "Error: Falta el ID de teléfono para editar.";
             }
@@ -168,12 +218,36 @@ if (empty($route) || $route === '/') {
                 $controller->update();
             }
             break;
+        case 'telefono/eliminar':
+             if (isset($_GET['id'])) {
+                $controller = new TelefonoController();
+                $controller->eliminar($_GET['id']);
+            } else {
+                echo "Error: Falta el ID de teléfono para eliminar.";
+            }
+            break;
+        case 'telefono/delete':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller = new TelefonoController();
+                $controller->delete();
+            }
+            break;
 
-        // --- RUTAS DE ESTADO CIVIL ---
+        // --- RUTAS DE ESTADO CIVIL (CRUD Completo) ---
         case 'estadocivil':
         case 'estadocivil/index':
-            $controller = new EstadoCivilController();
+            $controller = new EstadocivilController();
             $controller->index();
+            break;
+        case 'estadocivil/create':
+            $controller = new EstadocivilController();
+            $controller->create();
+            break;
+        case 'estadocivil/store':
+             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller = new EstadocivilController();
+                $controller->store();
+            }
             break;
         case 'estadocivil/edit':
             if (isset($_GET['idestadocivil'])) {
@@ -211,3 +285,4 @@ if (empty($route) || $route === '/') {
     }
 }
 ?>
+

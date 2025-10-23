@@ -2,139 +2,141 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// En TelefonoController.php
-// Rutas corregidas usando __DIR__
+// Rutas corregidas usando __DIR__ (asumiendo que este archivo está en /app/controllers)
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../models/Telefono.php';
-require_once __DIR__ . '/../models/Persona.php'; // Necesario para los formularios
+require_once __DIR__ . '/../../app/models/Telefono.php';
+require_once __DIR__ . '/../../app/models/Persona.php';
 
 class TelefonoController {
     private $telefono;
-    private $persona; // Necesario para los formularios
     private $db;
-    private $basePath = '/apple6b/public/'; // Definido en tu index.php
+    private $persona;
+    // Definir el basePath para las redirecciones
+    private $basePath = '/apple6b/public/';
 
     public function __construct() {
         $this->db = (new Database())->getConnection();
         $this->telefono = new Telefono($this->db);
-        $this->persona = new Persona($this->db); // Inicializar el modelo Persona
+        $this->persona = new Persona($this->db);
     }
 
     // Mostrar todos los teléfonos
     public function index() {
-        $telefonos = $this->telefono->read();
-        require_once __DIR__ . '/../views/telefono/index.php';
+        $telefonos = $this->telefono->read1(); // Asumo que read1() es correcto
+        require_once __DIR__ . '/../../app/views/telefono/index.php';
     }
 
-    // --- MUESTRA EL FORMULARIO DE CREACIÓN ---
+    // Muestra el formulario de creación (antes 'createForm')
     public function create() {
-        // Necesitamos la lista de personas para el <select>
         $personas = $this->persona->read();
-        
-        require_once __DIR__ . '/../views/telefono/create.php';
+        require_once __DIR__ . '/../../app/views/telefono/create.php';
     }
 
-    // --- PROCESA EL FORMULARIO DE CREACIÓN ---
+    // Procesa el formulario de creación (antes 'create')
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            // Validar que ambos campos lleguen
-            if (isset($_POST['numero'], $_POST['idpersona'])) {
-                
+            if (isset($_POST['numero']) && isset($_POST['idpersona'])) {
+                $this->telefono->idpersona = $_POST['idpersona'];
                 $this->telefono->numero = $_POST['numero'];
-                $this->telefono->idpersona = $_POST['idpersona']; // Añadido campo faltante
-
+                
                 if ($this->telefono->create()) {
-                    header('Location: ' . $this->basePath . 'telefono/index?msg=created');
+                    header('Location: ' . $this->basePath . 'telefono');
+                    exit;
                 } else {
-                    header('Location: ' . $this->basePath . 'telefono/index?msg=error');
+                    echo "Error al crear el teléfono";
                 }
             } else {
-                 header('Location: ' . $this->basePath . 'telefono/create?msg=missingdata');
+                echo "Faltan datos";
             }
         } else {
-            header('Location: ' . $this->basePath . 'telefono/create');
+            echo "Método incorrecto";
         }
-        exit;
+        die();
     }
 
-    // --- MUESTRA EL FORMULARIO DE EDICIÓN ---
-    public function edit($id) {
-        $this->telefono->id = $id;
+    // Muestra el formulario de edición
+    public function edit($idtelefono) {
+        $this->telefono->idtelefono = $idtelefono;
         $telefono = $this->telefono->readOne();
-
-        if (!$telefono) {
-            die("Error: No se encontró el registro.");
-        }
-        
-        // Necesitamos la lista de personas para el <select>
         $personas = $this->persona->read();
 
-        require_once __DIR__ . '/../views/telefono/edit.php';
-    }
-
-    // --- PROCESA EL FORMULARIO DE EDICIÓN ---
-    public function update() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            // Validar que lleguen todos los campos
-            if (isset($_POST['id'], $_POST['numero'], $_POST['idpersona'])) {
-                
-                $this->telefono->id = $_POST['id'];
-                $this->telefono->numero = $_POST['numero'];
-                $this->telefono->idpersona = $_POST['idpersona']; // Añadido campo faltante
-
-                if ($this->telefono->update()) {
-                    header('Location: ' . $this->basePath . 'telefono/index?msg=updated');
-                } else {
-                    header('Location: ' . $this->basePath . 'telefono/index?msg=error');
-                }
-            } else {
-                // Corregir el ID que se envía de vuelta
-                $id = $_POST['id'] ?? 0;
-                header('Location: ' . $this->basePath . 'telefono/edit?id=' . $id . '&msg=missingdata');
-            }
-        } else {
-            header('Location: ' . $this->basePath . 'telefono/index');
+        if (!$telefono) {
+            die("Error: No se encontró el registro.");
         }
-        exit;
+
+        require_once __DIR__ . '/../../app/views/telefono/edit.php';
     }
 
-    // --- MUESTRA LA VISTA DE CONFIRMACIÓN DE BORRADO ---
-    public function eliminar($id) {
-        $this->telefono->id = $id;
+    // Muestra la confirmación para eliminar
+    public function eliminar($idtelefono) { // Corregido el parámetro
+        $this->telefono->idtelefono = $idtelefono; // Usar el parámetro
         $telefono = $this->telefono->readOne();
 
         if (!$telefono) {
             die("Error: No se encontró el registro.");
         }
 
-        require_once __DIR__ . '/../views/telefono/delete.php';
+        require_once __DIR__ . '/../../app/views/telefono/delete.php';
     }
 
-    // --- PROCESA EL BORRADO ---
-    public function delete() {
+    // Procesa la actualización
+    public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['id'])) {
-                $this->telefono->id = $_POST['id'];
+            if (isset($_POST['numero']) && isset($_POST['idpersona']) && isset($_POST['idtelefono'])) {
+                $this->telefono->idpersona = $_POST['idpersona'];
+                $this->telefono->numero = $_POST['numero'];
+                $this->telefono->idtelefono = $_POST['idtelefono'];
                 
-                if ($this->telefono->delete()) {
-                    header('Location: ' . $this->basePath . 'telefono/index?msg=deleted');
+                if ($this->telefono->update()) {
+                    header('Location: ' . $this->basePath . 'telefono');
+                    exit;
                 } else {
-                    header('Location: ' . $this->basePath . 'telefono/index?msg=error');
+                    echo "Error al actualizar el teléfono";
                 }
             } else {
-                header('Location: ' . $this->basePath . 'telefono/index?msg=missingid');
+                echo "Faltan datos";
             }
         } else {
-            header('Location: ' . $this->basePath . 'telefono/index');
+            echo "Método incorrecto";
         }
+        die();
+    }
+
+    // Procesa la eliminación
+    public function delete() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Corregido: buscar 'idtelefono' en lugar de 'id'
+            if (isset($_POST['idtelefono'])) { 
+                $this->telefono->idtelefono = $_POST['idtelefono'];
+                
+                if ($this->telefono->delete()) {
+                    header('Location: ' . $this->basePath . 'telefono');
+                    exit;
+                } else {
+                    header('Location: ' . $this->basePath . 'telefono?msg=error');
+                    exit;
+                }
+            } else {
+                echo "Faltan datos";
+            }
+        } else {
+            echo "Método incorrecto";
+        }
+        die();
+    }
+
+    public function api() {
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        $telefonos = $this->telefono->getAll();
+        header('Content-Type: application/json');
+        echo json_encode($telefonos);
         exit;
     }
 }
 
-// --- ELIMINADO ---
-// Se borró todo el código de enrutamiento que estaba aquí,
-// ya que 'public/index.php' se encarga de eso.
+// --- TODO EL BLOQUE DEL ENRUTADOR HA SIDO ELIMINADO ---
+// (El 'if (isset($_GET['action']))' no debe estar aquí)
 ?>
 
