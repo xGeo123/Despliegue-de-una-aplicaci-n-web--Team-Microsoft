@@ -126,9 +126,9 @@ if (empty($route) || $route === '/') {
             }
             break;
         case 'sexo/eliminar': 
-            if (isset($_GET['idsexo'])) { 
+            if (isset($_GET['id'])) { 
                 $controller = new SexoController();
-                $controller->eliminar($_GET['idsexo']);
+                $controller->eliminar($_GET['id']);
             } else {
                 echo "Error: Falta el ID de sexo para eliminar.";
             }
