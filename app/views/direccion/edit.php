@@ -1,8 +1,12 @@
+<?php
+    // Define la ruta base para que los enlaces y el 'action' del formulario funcionen
+    $basePath = '/public/'; 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Actualizar Teléfono</title>
+    <title>Actualizar Dirección</title> <!-- Título corregido -->
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -44,7 +48,7 @@
         }
 
         input[type="submit"] {
-            background-color: #28a745;
+            background-color: #28a745; /* Verde para actualizar */
             color: white;
             padding: 12px 20px;
             border: none;
@@ -52,38 +56,56 @@
             cursor: pointer;
             font-size: 16px;
             width: 100%;
+            margin-bottom: 20px; /* Espacio para el enlace Volver */
         }
 
         input[type="submit"]:hover {
             background-color: #218838;
+        }
+        
+        /* Estilo para el enlace 'Volver' */
+        .form-container a {
+            display: block;
+            text-align: center;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2>Actualizar Teléfono</h2>
-    <form action="../../app/controllers/DireccionController.php?action=update" method="POST">
+    <h2>Actualizar Dirección</h2> <!-- H2 Corregido -->
+    <!-- ACTION CORREGIDO: Apunta a la ruta 'direccion/update' -->
+    <form action="<?php echo $basePath; ?>direccion/update" method="POST">
 
-        <!-- ID oculto del teléfono -->
-        <input type="hidden" name="iddireccion" value="<?= $direccion['iddireccion'] ?>">
+        <!-- ID oculto -->
+        <input type="hidden" name="iddireccion" value="<?php echo htmlspecialchars($direccion['iddireccion']); ?>">
 
         <label for="idpersona">Persona:</label>
         <select name="idpersona" id="idpersona" required>
             <option value="">Seleccione una persona</option>
             <?php foreach ($personas as $persona): ?>
-                <option value="<?= $persona['idpersona'] ?>" 
-                    <?= $persona['idpersona'] == $direccion['idpersona'] ? 'selected' : '' ?>>
-                    <?= $persona['apellidos'] . ' ' . $persona['nombres'] ?>
+                <option value="<?php echo $persona['idpersona']; ?>" 
+                    <?php echo $persona['idpersona'] == $direccion['idpersona'] ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($persona['apellidos'] . ' ' . $persona['nombres']); ?>
                 </option>
             <?php endforeach; ?>
         </select>
 
-        <label for="nombre">Número de Teléfono:</label>
-        <input type="text" name="nombre" id="nombre" value="<?= $direccion['nombre'] ?>" required>
+        <label for="nombre">Nombre Dirección:</label> <!-- Label corregido -->
+        <input type="text" name="nombre" id="nombre" value="<?php echo htmlspecialchars($direccion['nombre']); ?>" required>
 
-        <input type="submit" value="Actualizar Teléfono">
+        <input type="submit" value="Actualizar Dirección"> <!-- Botón corregido -->
     </form>
+    
+    <!-- Enlace Volver -->
+    <a href="<?php echo $basePath; ?>direccion">Volver al listado</a>
 </div>
 
 </body>
