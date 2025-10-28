@@ -73,7 +73,7 @@ public function read() {
     }
 
     // Eliminar un sexo
- ublic function delete() {
+ public function delete() {
     // --- PASO 1: Obtener el ID del sexo "No especificado" ---
     $fallback_id = null;
     try {
