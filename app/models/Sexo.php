@@ -73,22 +73,19 @@ public function read() {
     }
 
     // Eliminar un sexo
-    public function delete() {
-        try {
-            if (empty($this->id)) {
-                return false;
-            }
-	            error_log("Intentando eliminar el ID: " . $this->id);
+ public function delete() {
+    try {
+        if (empty($this->id)) {
+            return false;
+        }
+        error_log("Intentando eliminar el ID: " . $this->id);
 
-
-
-
-	  // Preparar la consulta
+        // Preparar la consulta
         $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $this->id, PDO::PARAM_INT);
-	
-// Ejecutar la consulta
+    
+        // Ejecutar la consulta
         if ($stmt->execute()) {
             error_log("Registro con ID " . $this->id . " eliminado correctamente.");
             return true;
@@ -97,12 +94,16 @@ public function read() {
             return false;
         }
 
-
-
-        } catch (PDOException $e) {
-            error_log("Error en delete(): " . $e->getMessage());
-            return false;
-        }
+    } catch (PDOException $e) {
+        // ¡EL ERROR SE ESTÁ ATRAPANDO AQUÍ!
+        error_log("Error en delete(): " . $e->getMessage());
+        
+        // --- ¡AÑADE ESTA LÍNEA PARA VER EL ERROR EN PANTALLA! ---
+        echo "Error de Base de Datos al eliminar: " . $e->getMessage();
+        // -----------------------------------------------------------
+        
+        return false;
     }
+}
 }
 ?>
