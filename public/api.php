@@ -23,22 +23,26 @@ require_once __DIR__ . '/../app/models/Estadocivil.php';
 
 // --- ANÁLISIS DE RUTA ---
 $requestUri = $_SERVER["REQUEST_URI"];
-$basePath = '/public/api/';
+$tabla = trim($_GET['table'] ?? '');
 
-// Obtener la ruta relativa al basePath
-$route = '';
-if (strpos($requestUri, $basePath) === 0) {
-    $route = substr($requestUri, strlen($basePath));
+// Fallback por path: /api.php/sexo o /public/api/sexo
+if ($tabla === '') {
+    $path = parse_url($requestUri, PHP_URL_PATH) ?: '';
+    $path = rtrim($path, '/');
+
+    if (strpos($path, '/api.php/') !== false) {
+        $tabla = substr($path, strrpos($path, '/api.php/') + 9);
+    } elseif (strpos($path, '/public/api/') !== false) {
+        $tabla = substr($path, strrpos($path, '/public/api/') + 12);
+    }
+
+    $tabla = trim($tabla, '/');
+    if (strpos($tabla, '/') !== false) {
+        $tabla = explode('/', $tabla)[0];
+    }
 }
 
-// Limpiar la ruta
-$route = strtok($route, '?');
-$route = trim($route, '/');
-
-// Dividir ruta: /tabla o /tabla/id
-$parts = explode('/', $route);
-$tabla = $parts[0] ?? '';
-$id = $parts[1] ?? null;
+$id = null;
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
