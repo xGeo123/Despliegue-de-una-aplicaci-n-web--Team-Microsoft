@@ -116,5 +116,16 @@ class SexoController {
         }
         die();
     }
+
+    public function api() {
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        $sexos = $this->sexo->read();
+        header('Content-Type: application/json');
+        echo json_encode($sexos);
+        exit;
+    }
 }
 

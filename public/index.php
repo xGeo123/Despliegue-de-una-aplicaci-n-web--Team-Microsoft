@@ -98,6 +98,28 @@ if (empty($route)) {
     // --- ENRUTADOR PRINCIPAL ---
     switch ($route) {
 
+        // --- RUTAS API JSON PARA FLUTTER ---
+        case 'sexo/api':
+            $controller = new SexoController();
+            $controller->api();
+            break;
+        case 'persona/api':
+            $controller = new PersonaController();
+            $controller->api();
+            break;
+        case 'direccion/api':
+            $controller = new DireccionController();
+            $controller->api();
+            break;
+        case 'telefono/api':
+            $controller = new TelefonoController();
+            $controller->api();
+            break;
+        case 'estadocivil/api':
+            $controller = new EstadocivilController();
+            $controller->api();
+            break;
+
         // --- RUTAS DE PERSONA (CRUD Completo) ---
         case 'persona':
         case 'persona/index':
